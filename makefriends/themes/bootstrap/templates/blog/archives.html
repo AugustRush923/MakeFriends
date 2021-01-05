@@ -1,0 +1,39 @@
+{% extends "./base.html" %}
+
+{% block title %}
+    <title>归档 - AugustRush923</title>
+{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="blog-main">
+                        {% for date in dates %}
+                            <div class="django-panel django-panel-padding">
+                                <div class="mobile-archives">
+                                    <h3 class="archives-year">{{ date.year }}</h3>
+                                </div>
+                                <ul class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    {% for post in post_list %}
+                                        {% if post.created_time.year == date.year %}
+                                            <div class="panel panel-default">
+                                                <li class="list-group-item">
+                                                    <span class="date">{{ post.created_time | date:"Y/m/d" }}</span>
+                                                    &nbsp; <a href="{% url 'post-detail' post.id %}"
+                                                              title="{{ post.title }}">{{ post.title }}</a>
+                                                </li>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {{ block.super }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

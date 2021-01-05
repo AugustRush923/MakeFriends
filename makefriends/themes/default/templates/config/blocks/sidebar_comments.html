@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    {% for comment in comments%}
+    <li><a href="/post/{{comment.target_id}}.html">{{comment.target.title}}</a> |
+        {{comment.nickname}} : {{comment.content}}
+    </li>
+    {% endfor%}
+</ul>
+</body>
+</html>

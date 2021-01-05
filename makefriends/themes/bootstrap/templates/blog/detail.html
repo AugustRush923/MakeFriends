@@ -1,0 +1,79 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>{{ post.title }} | AugustRush923</title>
+{% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static "css/vs.css" %}">
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="blog-main">
+                        <div class="heading-blog">
+                            {{ post.title }}
+                        </div>
+                        发布：{{ post.created_time | date:"Y年m月d日" }} |
+                        作者：{{ post.owner }} |
+                        阅读量: {{ post.pv }}
+                        <div class="blog-txt">
+                            {% autoescape off %}
+                                {% load emoji_tags %}
+                                {{ post.toc | safe }}
+                                {#                                {{ post.content_markdown | safe }}#}
+                                {{ post.content_markdown | emoji_replace }}
+                                {#                                {{ post.content_markdown | emoji_replace_unicode }}#}
+                                {#                                {{ post.content_markdown  | emoji_replace_html_entities }}#}
+                            {% endautoescape %}
+                        </div>
+                        <div class="blog-more">
+                            {% if pre_post and next_post %}
+                                <span>上一篇:<a href="{% url 'post-detail' pre_post.id %}">{{ pre_post }}</a></span>
+                                <span id="right">下一篇:<a href="{% url 'post-detail' next_post.id %}">{{ next_post }}</a></span>
+                            {% elif next_post %}
+                                <span>下一篇:<a href="{% url 'post-detail' next_post.id %}">{{ next_post }}</a></span>
+                            {% elif pre_post %}
+                                <span>上一篇:<a href="{% url 'post-detail' pre_post.id %}">{{ pre_post }}</a></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div id="disqus_thread"></div>
+                    <script>
+                        /**
+                         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                        /*
+                        var disqus_config = function () {
+                        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        };
+                        */
+                        (function () { // DON'T EDIT BELOW THIS LINE
+                            var d = document, s = d.createElement('script');
+                            s.src = 'https://makefriend.disqus.com/embed.js';
+                            s.setAttribute('data-timestamp', +new Date());
+                            (d.head || d.body).appendChild(s);
+                        })();
+                    </script>
+                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
+                        powered by Disqus.</a></noscript>
+                </div>
+                {{ block.super }}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block jsBlock %}
+    {#    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>#}
+    {#    <script src="//cdn.bootcss.com/highlightjs-line-numbers.js/1.1.0/highlightjs-line-numbers.min.js"></script>#}
+    <script src="{% static "js/highlight.min.js" %}"></script>
+    <script src="{% static "js/highlightjs-line-numbers.js" %}"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>hljs.initLineNumbersOnLoad();</script>
+
+    <script id="dsq-count-scr" src="//makefriend.disqus.com/count.js" async></script>
+{% endblock %}

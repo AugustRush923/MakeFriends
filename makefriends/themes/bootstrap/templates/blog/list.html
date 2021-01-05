@@ -1,0 +1,109 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}
+    {% if tag %}
+        <title>
+            {% for tag in tag %}
+                {{ tag.name }} - AugustRush923
+            {% endfor %}
+        </title>
+    {% elif cate %}
+        <title>
+            {% for cate in cate %}
+                {{ cate }} - AugustRush923
+            {% endfor %}
+        </title>
+    {% endif %}
+    <title>AugustRush923</title>
+{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    {% for post in post_list %}
+                        <div class="blog-main">
+                            <div class="heading-blog">
+                                <a href="{% url 'post-detail' post.id %}"> {{ post.title }}</a>
+                            </div>
+                            <div class="info">
+                                分类：<a href="{% url 'category-list' post.category %}">{{ post.category }}</a> |
+                                标签：{% for tag in post.tag.all %}<a href="{% url 'tag-list' tag.name %}">
+                                {{ tag.name }}</a>{% endfor %} |
+                                发布：{{ post.created_time | date:"Y年m月d日" }} |
+                                作者：{{ post.owner }} |
+                                阅读量：{{ post.pv }}
+                            </div>
+                            <div class="blog-txt">
+                                {{ post.desc }}
+                            </div>
+                        </div>
+                        <!--BLOG ONE END -->
+                        <!--PAGING  BEGIN -->
+                    {% endfor %}
+                    <nav aria-label="Page navigation">
+                        {% if page_obj %}
+                            <ul class="pagination">
+                                {% if page_obj.has_previous %}
+                                    <li>
+                                        <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;上一页</span>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled">
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;上一页</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if first %}
+                                    <li><a href="?page=1">1</a></li>
+                                {% endif %}
+                                {% if left %}
+                                    {% if left_has_more %}
+                                        <span>...</span>
+                                    {% endif %}
+                                    {% for i in left %}
+                                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                    {% endfor %}
+                                {% endif %}
+                                <li><a href="?page={{ page_obj.number }}" style="color: red">{{ page_obj.number }}</a>
+                                </li>
+                                {% if right %}
+                                    {% for i in right %}
+                                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                    {% endfor %}
+                                    {% if right_has_more %}
+                                        <span>...</span>
+                                    {% endif %}
+                                {% endif %}
+                                {% if last %}
+                                    <li><a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+                                {% endif %}
+                                {% if page_obj.has_next %}
+
+                                    <li>
+                                        <a href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span
+                                                aria-hidden="true">下一页&raquo;</span>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled">
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">下一页&raquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+                    </nav>
+                    <!--PAGING  END -->
+                </div>
+                {{ block.super }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

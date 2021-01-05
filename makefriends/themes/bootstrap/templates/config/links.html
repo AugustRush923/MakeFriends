@@ -1,0 +1,79 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% block title %}
+    <title>友情链接 - AugustRush923</title>
+{% endblock %}
+
+
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="blog-main">
+                        <table class="table table-hover">
+                            <h2>友链</h2>
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">头像</th>
+                                <th scope="col">名称</th>
+                                <th scope="col">简介</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for link in link_list %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td><img src="{{ link.avatar }}" class="img-circle img-responsive center-block"
+                                             style="width: 70px; height: 70px;"/></td>
+                                    <td><a href="{{ link.href }}" target="_blank">{{ link.title }}</a></td>
+                                    <td class="text-info">{{ link.introduction }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <br>
+                        <h3>添加友链</h3>
+                        <blockquote>
+                            <p>
+                                名称：AugustRush
+                                <br>
+                                介绍：一个还在努力成长的小伙汁！
+                                <br>
+                                链接：<a href="https://www.hdcheung.cn" target="_blank">https://www.hdcheung.cn</a>
+                                <br>
+                                头像：<a href="https://www.hdcheung.cn/static/img/avatar.jpeg" target="_blank">https://www.hdcheung.cn/static/img/avatar.jpeg</a>
+                            </p>
+                        </blockquote>
+                        <p>想要交换友链，先把本站添加到你的网站中，然后评论或邮件贴出你的信息~ 💖</p>
+                        <blockquote>
+                            <p>友链信息展示需要，你的信息格式要包含：名称（必须）、介绍（可选。没有则和名称一致）、链接（必须）、头像（必须。最好是 CDN 链接）。</p>
+                        </blockquote>
+                    </div>
+                    <div id="disqus_thread"></div>
+                    <script>
+                        /**
+                         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                        /*
+                        var disqus_config = function () {
+                        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        };
+                        */
+                        (function () { // DON'T EDIT BELOW THIS LINE
+                            var d = document, s = d.createElement('script');
+                            s.src = 'https://makefriend.disqus.com/embed.js';
+                            s.setAttribute('data-timestamp', +new Date());
+                            (d.head || d.body).appendChild(s);
+                        })();
+                    </script>
+                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
+                        powered by Disqus.</a></noscript>
+                </div>
+                {{ block.super }}
+            </div>
+        </div>
+    </section>
+{% endblock %}
