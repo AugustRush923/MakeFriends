@@ -23,11 +23,12 @@ class CommonViewMixin:
         return context
 
 
-class IndexView(CommonViewMixin, ListView):
+class IndexView(CommonViewMixin, PJAXResponseMixin, ListView):
     queryset = Post.latest_posts()
     paginate_by = 7
     context_object_name = 'post_list'
     template_name = 'blog/list.html'
+    pjax_template_name = 'blog/list.html'
     ordering = '-created_time'
 
     def get_context_data(self, **kwargs):
@@ -86,6 +87,8 @@ class IndexView(CommonViewMixin, ListView):
 
 
 class CategoryView(IndexView):
+    ordering = '-pv'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category_name = self.kwargs.get('category_name')
@@ -107,6 +110,7 @@ class CategoryView(IndexView):
 
 class ArchivesView(IndexView):
     template_name = 'blog/archives.html'
+    pjax_template_name = 'blog/archives.html'
     paginate_by = False
 
     def get_context_data(self, **kwargs):
@@ -136,9 +140,10 @@ class TagView(IndexView):
         return queryset.filter(tag__name=tag_name)
 
 
-class PostDetailView(CommonViewMixin, DetailView):
+class PostDetailView(CommonViewMixin, PJAXResponseMixin, DetailView):
     queryset = Post.latest_posts()
     template_name = 'blog/detail.html'
+    pjax_template_name = 'blog/detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
 
@@ -209,6 +214,7 @@ class AuthorView(IndexView):
 class AboutView(PostDetailView):
     queryset = Post.about_me()
     template_name = 'blog/about.html'
+    pjax_template_name = 'blog/about.html'
     context_object_name = 'about_post'
     pk_url_kwarg = 'about'
 
@@ -228,6 +234,7 @@ class AboutView(PostDetailView):
 class SummaryView(PostDetailView):
     queryset = Post.summary()
     template_name = 'blog/summary.html'
+    pjax_template_name = 'blog/summary.html'
     context_object_name = 'summary'
     pk_url_kwarg = 'summary_year'
 

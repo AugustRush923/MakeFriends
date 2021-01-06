@@ -15,6 +15,7 @@
     <link href="{% static "css/font-awesome.css" %}" rel="stylesheet"/>
     <!-- APLAYER STYLE CSS   -->
     <link href="{% static "css/APlayer.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/nprogress.css" %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static "css/font-awesome.css" %}">
     {% block extra_head %}
 
@@ -53,8 +54,11 @@
             <a href="/about/"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> 关于</a>
         </li>
     </ul>
-{% endblock %}
 
+{% endblock %}
+<div class="loading">
+    <div id="loader"></div>
+</div>
 {% block content %}
     <br/>
     <div class="col-md-3">
@@ -64,7 +68,7 @@
             </li>
             {% for cate in category.navs %}
                 <li class="list-group-item">
-                    <a href="/category/{{ cate.name }}"><span>{{ cate.name }}</span>
+                    <a href="/category/{{ cate.name }}/">{{ cate.name }}
                     </a> - ({{ cate.num_posts }}篇)
                 </li>
             {% endfor %}
@@ -129,16 +133,16 @@
 {% endblock %}
 {% block sidebar %}
 {% endblock %}
-<!--<div id="aplayer">    -->
-<!--</div>-->
-<!--<script src={% static "js/APlayer.min.js" %}></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>-->
-<!--<meting-js-->
-<!--    server="netease"-->
-<!--    type="playlist"-->
-<!--    id="455535586"-->
-<!--    fixed="true">-->
-<!--</meting-js>-->
+<div id="aplayer">
+</div>
+<script src={% static "js/APlayer.min.js" %}></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+<meting-js
+        server="netease"
+        type="playlist"
+        id="455535586"
+        fixed="true">
+</meting-js>
 <div id="back_top">
     <img id="img_2_top" src="{% static "img/top.png" %}">
 </div>
@@ -162,9 +166,38 @@
 <script src="https://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
 <script src="{% static "js/bootstrap.min.js" %}"></script>
 <script src="{% static "js/backtop.js" %}"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
-{% block jsBlock %}
+{#<script src="https://cdn.bootcdn.net/ajax/libs/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>#}
+<script src="https://cdn.jsdelivr.net/npm/pjax/pjax.js"></script>
+<script src="{% static "js/nprogress.js" %}"></script>
+<script id="dsq-count-scr" src="//makefriend.disqus.com/count.js" async></script>
 
+{% block jsBlock %}
+    <script>
+        var pjax = new Pjax({
+            selectors: [
+                "title",
+                ".col-md-9",
+                {#".data-pjax"#}
+            ],
+            cacheBust: false,
+            {#scrollTo: false,#}
+            {#scrollRestoration: false#}
+        })
+        // 开始 PJAX 执行的函数
+        document.addEventListener('pjax:send', function () {
+            NProgress.start();
+            console.log('pjax:send')
+        });
+
+        // PJAX 完成之后执行的函数
+        document.addEventListener('pjax:complete', function () {
+            NProgress.done();
+            console.log('pjax:complete')
+        });
+        $("script[data-pjax], .pjax-reload script").each(function () {
+            $(this).parent().append($(this).remove());
+        });
+    </script>
     {#    <script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>#}
 {% endblock %}
 </body>
