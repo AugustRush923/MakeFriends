@@ -13,11 +13,9 @@ def generate_word_cloud():
     tag_list = Tag.get_tags()
     file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 
-    with open(os.path.join(file_path, 'txt_file', 'word.txt'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(file_path, 'txt_file', 'word.txt'), 'w+', encoding='utf-8') as f:
         for tag in tag_list:
             f.write(tag.name + ',' + str(tag.num_posts) + '\n')
-
-    with open(os.path.join(file_path, 'txt_file', 'word.txt'), 'r', encoding='utf-8') as f:
         txt = f.read()
 
     w = wordcloud.WordCloud(width=330,
