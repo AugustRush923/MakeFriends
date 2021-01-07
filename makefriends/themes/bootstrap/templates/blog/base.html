@@ -166,37 +166,20 @@
 <script src="https://cdn.staticfile.org/jquery/1.11.1-rc2/jquery.min.js"></script>
 <script src="{% static "js/bootstrap.min.js" %}"></script>
 <script src="{% static "js/backtop.js" %}"></script>
-{#<script src="https://cdn.bootcdn.net/ajax/libs/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>#}
-<script src="https://cdn.jsdelivr.net/npm/pjax/pjax.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
+{#<script src="https://cdn.jsdelivr.net/npm/pjax/pjax.js"></script>#}
 <script src="{% static "js/nprogress.js" %}"></script>
 <script id="dsq-count-scr" src="//makefriend.disqus.com/count.js" async></script>
 
 {% block jsBlock %}
     <script>
-        var pjax = new Pjax({
-            selectors: [
-                "title",
-                ".col-md-9",
-                {#".data-pjax"#}
-            ],
-            cacheBust: false,
-            {#scrollTo: false,#}
-            {#scrollRestoration: false#}
-        })
-        // 开始 PJAX 执行的函数
-        document.addEventListener('pjax:send', function () {
+        $(document).pjax('a[target!=_blank]', '.col-md-9', {fragment: '.col-md-9', timeout: 8000})
+        $(document).on('pjax:send', function () {
             NProgress.start();
-            console.log('pjax:send')
-        });
-
-        // PJAX 完成之后执行的函数
-        document.addEventListener('pjax:complete', function () {
+        })
+        $(document).on('pjax:complete', function () {
             NProgress.done();
-            console.log('pjax:complete')
-        });
-        $("script[data-pjax], .pjax-reload script").each(function () {
-            $(this).parent().append($(this).remove());
-        });
+        })
     </script>
     {#    <script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>#}
 {% endblock %}
