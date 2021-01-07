@@ -16,7 +16,7 @@
     <!-- APLAYER STYLE CSS   -->
     <link href="{% static "css/APlayer.min.css" %}" rel="stylesheet">
     <link href="{% static "css/nprogress.css" %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static "css/font-awesome.css" %}">
+    <link rel="stylesheet" href="{% static "css/vs.css" %}">
     {% block extra_head %}
 
     {% endblock %}
@@ -151,14 +151,16 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center set-foot">
-                <p>基于OpenResty+Supervisord+Daphne+Django1.11.1+Python3.6.5构建</p>
+                <p>基于Nginx+Supervisord+Daphne+Django1.11.1+Python3.6.5构建</p>
                 <p>版权所有 &copy 2020-2021 August Rush</p>
                 <p><img src="{% static "img/beian_icon.png" %}"/>
-                    <a href="http://www.beian.miit.gov.cn">京ICP备20007446号-1</a> &
-                    <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41100202000460">豫公网安备
+                    <a href="http://www.beian.miit.gov.cn" target="_blank">京ICP备20007446号-1</a> &
+                    <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41100202000460"
+                       target="_blank">豫公网安备
                         41100202000460号</a>
                 </p>
-                <p><a href="/sitemap.xml/">网站地图</a> & <a href="/atom.xml/">RSS | Feed</a></p>
+                <p><a href="/sitemap.xml/" target="_blank">网站地图</a> & <a href="/atom.xml/" target="_blank">RSS |
+                    Feed</a></p>
             </div>
         </div>
     </div>
@@ -170,15 +172,28 @@
 {#<script src="https://cdn.jsdelivr.net/npm/pjax/pjax.js"></script>#}
 <script src="{% static "js/nprogress.js" %}"></script>
 <script id="dsq-count-scr" src="//makefriend.disqus.com/count.js" async></script>
-
+<script src="{% static "js/highlight.min.js" %}"></script>
+<script src="{% static "js/highlightjs-line-numbers.js" %}"></script>
+<div class=".pjax-reload">
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script>hljs.initLineNumbersOnLoad();</script>
+</div>
 {% block jsBlock %}
     <script>
+        function pjax_reload() {
+            $("script[data-pjax], .pjax-reload script").each(function () {
+                $(this).parent().append($(this).remove());
+            });
+            console.log('init')
+        }
+
         $(document).pjax('a[target!=_blank]', '.col-md-9', {fragment: '.col-md-9', timeout: 8000})
         $(document).on('pjax:send', function () {
             NProgress.start();
         })
         $(document).on('pjax:complete', function () {
             NProgress.done();
+            pjax_reload();
         })
     </script>
     {#    <script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>#}

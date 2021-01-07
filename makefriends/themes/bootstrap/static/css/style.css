@@ -25,12 +25,12 @@ body {
     color: #555555;
 }
 
-.table .table-hover th, .table .table-hover td {
+.table th, .table td {
     text-align: center !important;
     vertical-align: middle !important;
 }
 
-.table .table-hover td {
+.table td {
     font-size: 15px !important;
 }
 

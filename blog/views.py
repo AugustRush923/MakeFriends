@@ -5,7 +5,7 @@ from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView
-from djpjax import pjax, PJAXResponseMixin
+from djpjax import PJAXResponseMixin
 
 from .models import Post, Tag, Category
 from celery_tasks.count.tasks import increase_PV, increase_UV, increase_both
@@ -254,10 +254,10 @@ class SummaryView(PostDetailView):
 
 class HandleError:
     def page_not_found(request):
-        return render(request, 'blog/404.html')
+        return render(request, 'errors/404.html')
 
     def internal_server_error(request):
-        return render(request, 'blog/500.html')
+        return render(request, 'errors/500.html')
 
 
 class Message(View):

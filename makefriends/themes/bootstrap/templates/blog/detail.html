@@ -1,12 +1,10 @@
-{% extends "./base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}
     <title>{{ post.title }} | AugustRush923</title>
 {% endblock %}
-{% block extra_head %}
-    <link rel="stylesheet" href="{% static "css/vs.css" %}">
-{% endblock %}
+
 {% block content %}
     <section>
         <div class="container">
@@ -66,16 +64,4 @@
             </div>
         </div>
     </section>
-{% endblock %}
-
-{% block jsBlock %}
-    {#    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>#}
-    {#    <script src="//cdn.bootcss.com/highlightjs-line-numbers.js/1.1.0/highlightjs-line-numbers.min.js"></script>#}
-    <script src="{% static "js/highlight.min.js" %}"></script>
-    <script src="{% static "js/highlightjs-line-numbers.js" %}"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-    <script>hljs.initLineNumbersOnLoad();</script>
-
-    <script id="dsq-count-scr" src="//makefriend.disqus.com/count.js" async></script>
-    {{ block.super }}
 {% endblock %}
