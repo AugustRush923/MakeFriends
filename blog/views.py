@@ -8,6 +8,8 @@ from django.views.generic import ListView, DetailView
 from djpjax import PJAXResponseMixin
 
 from .models import Post, Tag, Category
+from comment.models import Comment
+from comment.forms import CommentForm
 from celery_tasks.count.tasks import increase_PV, increase_UV, increase_both
 # Create your views here.
 
@@ -151,12 +153,16 @@ class PostDetailView(CommonViewMixin, PJAXResponseMixin, DetailView):
         context = super(PostDetailView, self).get_context_data()
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, pk=post_id)
+
         context.update({
             # 'pre_post': Post.objects.filter(status=1).filter(created_time__gt=post.created_time).last(),
             'pre_post': Post.objects.filter(Q(status=1) & Q(created_time__lt=post.created_time)).first(),
             # 'next_post': Post.objects.filter(status=1).filter(created_time__lt=post.created_time).first(),
             'next_post': Post.objects.filter(Q(status=1) & Q(created_time__gt=post.created_time)).last(),
+            'comment_form': CommentForm,
+            'comment_list': Comment.get_by_target(post_id),
         })
+        print(context)
         return context
 
     def get(self, request, *args, **kwargs):

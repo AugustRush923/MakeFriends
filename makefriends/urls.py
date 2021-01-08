@@ -21,6 +21,7 @@ from blog.rss import LatestPostFeed
 from blog.sitemap import PostSitemap
 from blog import views
 from config.views import LinksView
+from comment.views import post_comment
 
 urlpatterns = [
     url(r'^backstage/', admin.site.urls, name='admin'),
@@ -38,6 +39,8 @@ urlpatterns = [
     url(r'mdeditor/', include('mdeditor.urls')),
     url(r'^emoji/', include('emoji.urls')),
     url(r'message/', views.Message.as_view(), name='message'),
+    url(r'^comment/post/(?P<post_id>[0-9]+)/$', post_comment, name='post_comment'),
+
 ]
 
 handler404 = views.HandleError.page_not_found
