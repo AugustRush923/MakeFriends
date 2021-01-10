@@ -11,6 +11,8 @@ from .models import Post, Tag, Category
 from comment.models import Comment
 from comment.forms import CommentForm
 from celery_tasks.count.tasks import increase_PV, increase_UV, increase_both
+
+
 # Create your views here.
 
 
@@ -97,11 +99,10 @@ class CategoryView(IndexView):
         try:
             category = Category.objects.filter(name=category_name)
         except Category.DoesNotExist:
-            raise Http404("Does not exist.")
+            raise Http404()
         context.update({
             'cate': category,
         })
-
         return context
 
     def get_queryset(self):
@@ -117,20 +118,26 @@ class ArchivesView(IndexView):
 
     def get_context_data(self, **kwargs):
         context = super(ArchivesView, self).get_context_data()
+        dates = cache.get('dates')
+        if not dates:
+            dates = Post.objects.filter(status=1).dates('created_time', 'year', order='DESC')
+        cache.set('dates', dates)
         context.update({
-            'dates': Post.objects.filter(status=1).dates('created_time', 'year', order='DESC')
+            'dates': dates
         })
         return context
 
 
 class TagView(IndexView):
+    ordering = '-pv'
+
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
         tag_name = self.kwargs.get('tag_name')
         try:
             tag = Tag.objects.filter(name=tag_name)
         except Tag.DoesNotExist:
-            raise Http404("Does not exist.")
+            raise Http404()
         context.update({
             'tag': tag
         })

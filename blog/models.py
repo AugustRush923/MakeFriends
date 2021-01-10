@@ -1,5 +1,6 @@
 import markdown
 from django.db import models
+from django.core.cache import cache
 from django.db.models import Count, Case, When
 from django.contrib.auth.models import User
 from django.utils.functional import cached_property
@@ -34,22 +35,26 @@ class Category(models.Model):
 
     @classmethod
     def get_navs(cls):
-        categories = cls.objects.filter(status=cls.STATUS_NORMAL)
-        nav_categories = []
-        normal_categories = []
-        for cate in categories:
-            if cate.is_nav:
-                nav_categories.append(cate)
-            else:
-                normal_categories.append(cate)
+        # categories = cls.objects.filter(status=cls.STATUS_NORMAL)
+        # nav_categories = []
+        # normal_categories = []
+        # for cate in categories:
+        #     if cate.is_nav:
+        #         nav_categories.append(cate)
+        #     else:
+        #         normal_categories.append(cate)
+        navs = cache.get('navs')
+        if not navs:
+            navs = cls.objects.filter(is_nav=True).annotate(
+                num_posts=Count(Case(When(post__status__exact=1, then=1))))
+        cache.set('navs', navs)
         return {
             # Category.objects.annotate(Count(Case(When(post__status__exact=1, then=1))))
             # 'navs': cls.objects.filter(is_nav=True).annotate(num_posts=Count('post')),
-            'navs': cls.objects.filter(is_nav=True).annotate(
-                num_posts=Count(Case(When(post__status__exact=1, then=1)))),
+            'navs': navs,
             # Django 2.0+
             # 'navs': cls.objects.filter(is_nav=True).annotate(num_posts=Count('post', filter=Q(post__status=1)),
-            'categories': normal_categories,
+            # 'categories': normal_categories,
         }
 
 
@@ -78,8 +83,11 @@ class Tag(models.Model):
     @classmethod
     def get_tags(cls):
         # tag_list = cls.objects.annotate(num_posts=Count('post')).filter(status__exact=cls.STATUS_NORMAL)
-        tag_list = cls.objects.filter(status=cls.STATUS_NORMAL).annotate(
-            num_posts=Count(Case(When(post__status__exact=1, then=1))))
+        tag_list = cache.get('tag_list')
+        if not tag_list:
+            tag_list = cls.objects.filter(status=cls.STATUS_NORMAL).annotate(
+                num_posts=Count(Case(When(post__status__exact=1, then=1))))
+        cache.set('tag_list', tag_list)
         return tag_list
 
 
@@ -131,12 +139,19 @@ class Post(models.Model):
 
     @classmethod
     def latest_posts(cls):
-        queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
-        return queryset
+        latest_posts = cache.get('latest_posts')
+        if not latest_posts:
+            latest_posts = cls.objects.filter(status=cls.STATUS_NORMAL)
+        cache.set('latest_post', latest_posts)
+        return latest_posts
 
     @classmethod
     def hot_posts(cls):
-        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')[:12]
+        hot_posts = cache.get('hot_posts')
+        if not hot_posts:
+            hot_posts = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')[:12]
+        cache.set('hot_posts', hot_posts)
+        return hot_posts
 
     @classmethod
     def archives(cls):
