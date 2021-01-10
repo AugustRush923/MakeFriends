@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.sitemaps import views as sitemap_views
+from django.views.decorators.cache import cache_page
 
 from blog.rss import LatestPostFeed
 from blog.sitemap import PostSitemap
@@ -28,12 +29,12 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'^category/(?P<category_name>\w+)/$', views.CategoryView.as_view(), name='category-list'),
     url(r'^tag/(?P<tag_name>\w+)/$', views.TagView.as_view(), name='tag-list'),
-    url(r'^post/(?P<post_id>\d+).html$', views.PostDetailView.as_view(), name='post-detail'),
+    url(r'^post/(?P<post_id>\d+).html$', cache_page(60*15)(views.PostDetailView.as_view()), name='post-detail'),
     url(r'^links/$', LinksView.as_view(), name='links'),
     url(r'^search/$', views.SearchView.as_view(), name='search'),
     url(r'^archives/$', views.ArchivesView.as_view(), name='archives'),
-    url(r'^(?P<about>about)/$', views.AboutView.as_view(), name='about'),
-    url(r'^summary/(?P<summary_year>\d+)/$', views.SummaryView.as_view(), name='summary'),
+    url(r'^(?P<about>about)/$', cache_page(60*15)(views.AboutView.as_view()), name='about'),
+    url(r'^summary/(?P<summary_year>\d+)/$', cache_page(60*15)(views.SummaryView.as_view()), name='summary'),
     url(r'^atom\.xml/$', LatestPostFeed(), name="rss"),
     url(r'^sitemap\.xml/$', sitemap_views.sitemap, {'sitemaps': {'posts': PostSitemap}}),
     url(r'mdeditor/', include('mdeditor.urls')),
