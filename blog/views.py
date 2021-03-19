@@ -271,16 +271,3 @@ class HandleError:
 
     def internal_server_error(request):
         return render(request, 'errors/500.html')
-
-
-class Message(View):
-    def get(self, request):
-        return render(request, 'blog/messageboard.html')
-
-    def post(self, request):
-        content = request.POST.get('content')
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        website = request.POST.get('website')
-        print(content, name, email, website)
-        return render(request, 'blog/messageboard.html')

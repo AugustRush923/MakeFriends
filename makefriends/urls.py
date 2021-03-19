@@ -33,13 +33,12 @@ urlpatterns = [
     url(r'^links/$', LinksView.as_view(), name='links'),
     url(r'^search/$', views.SearchView.as_view(), name='search'),
     url(r'^archives/$', views.ArchivesView.as_view(), name='archives'),
-    url(r'^(?P<about>about)/$', cache_page(60*15)(views.AboutView.as_view()), name='about'),
+    url(r'^about/$', cache_page(60*15)(views.AboutView.as_view()), name='about'),
     url(r'^summary/(?P<summary_year>\d+)/$', cache_page(60*15)(views.SummaryView.as_view()), name='summary'),
     url(r'^atom\.xml/$', LatestPostFeed(), name="rss"),
     url(r'^sitemap\.xml/$', sitemap_views.sitemap, {'sitemaps': {'posts': PostSitemap}}),
     url(r'mdeditor/', include('mdeditor.urls')),
     url(r'^emoji/', include('emoji.urls')),
-    url(r'message/', views.Message.as_view(), name='message'),
     url(r'^comment/post/(?P<post_id>[0-9]+)/$', post_comment, name='post_comment'),
 
 ]

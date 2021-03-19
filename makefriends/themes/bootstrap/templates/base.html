@@ -28,7 +28,7 @@
             <div class="row">
                 <div class="col-md-2">
                     <img src="{% static "img/avatar.jpeg" %}" class="img-circle img-responsive"/>
-{#                    <img src="http://cdn.hdcheung.cn/avatar.png" class="img-circle img-responsive"/>#}
+                    {#                    <img src="http://cdn.hdcheung.cn/avatar.png" class="img-circle img-responsive"/>#}
                 </div>
                 <div class="col-md-5 text-center">
                     <h1><strong>August Rush </strong></h1>
@@ -52,7 +52,7 @@
             <a href="{% url 'links' %}"><span class="glyphicon glyphicon-link" aria-hidden="true"></span> 友链</a>
         </li>
         <li role="presentation">
-            <a href="/about/"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> 关于</a>
+            <a href="{% url 'about' %}"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> 关于</a>
         </li>
     </ul>
 
@@ -75,7 +75,7 @@
             {% endfor %}
         </ul>
 
-        <form class="form-inline" action="/search/" method="get">
+        <form class="form-inline" action="{% url 'search' %}" method="get">
             <input class="form-control" type="search" name="keyword" placeholder="Search" aria-label="Search"
                    value="{{ keyword }}">
             <button class="btn btn-outline-success" type="submit">
@@ -88,12 +88,7 @@
                 <strong>标签云</strong>
             </li>
             <li class="list-group-item">
-                {#                {% for tag in tag_list %}#}
-                {#                    <a class="btn btn-default" href="{% url 'tag-list' tag.name %}" role="button">{{ tag.name }}</a>#}
-                {#                {% empty %}#}
-                {#                    暂无标签！#}
-                {#                {% endfor %}#}
-                <img src="{% static "img/wordcloud.png" %}" alt="word-cloud" class="img-responsive">
+                <img src="https://cdn.hdcheung.cn/static/img/wordcloud.png" class="img-responsive" alt="word-cloud"/>
             </li>
         </ul>
         <ul class="list-group">
@@ -104,7 +99,6 @@
             {% for hot in hot_post %}
                 <li class="list-group-item">
                     <a href="{% url 'post-detail' hot.id %}" role="button">{{ hot }}
-                        {#                        <span class="badge">阅读量： {{ hot.pv }}</span>#}
                     </a> - {{ hot.pv }} 阅读量
                 </li>
             {% empty %}
@@ -147,6 +141,23 @@
 <div id="back_top">
     <img id="img_2_top" src="{% static "img/top.png" %}">
 </div>
+<hr/>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center set-foot">
+            <ul class="nav nav-pills">
+                {% for tag in tag_list %}
+                    <li>
+                        <a href="{% url 'tag-list' tag.name %}">{{ tag.name }}</a>
+                    </li>
+                {% empty %}
+                    暂无标签！
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+<br>
 <hr/>
 {% block bottom %}
     <div class="container">

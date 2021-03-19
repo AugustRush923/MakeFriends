@@ -38,66 +38,28 @@
                             {% endif %}
                         </div>
                     </div>
-{#                        <form action="{% url 'post_comment' post.pk %}" method="post" class="comment-form">#}
-{#                            {% csrf_token %}#}
-{#                            <div class="row">#}
-{#                                <div class="col-md-4">#}
-{#                                    <label for="{{ form.name.id_for_label }}">名字：</label>#}
-{#                                    {{ form.name }}#}
-{#                                    {{ form.name.errors }}#}
-{#                                </div>#}
-{#                                <div class="col-md-4">#}
-{#                                    <label for="{{ form.email.id_for_label }}">邮箱：</label>#}
-{#                                    {{ form.email }}#}
-{#                                    {{ form.email.errors }}#}
-{#                                </div>#}
-{#                                <div class="col-md-4">#}
-{#                                    <label for="{{ form.url.id_for_label }}">URL：</label>#}
-{#                                    {{ form.url }}#}
-{#                                    {{ form.url.errors }}#}
-{#                                </div>#}
-{#                                <div class="col-md-12">#}
-{#                                    <label for="{{ form.text.id_for_label }}">评论：</label>#}
-{#                                    {{ form.text }}#}
-{#                                    {{ form.text.errors }}#}
-{#                                    <button type="submit" class="comment-btn">发表</button>#}
-{#                                </div>#}
-{#                            </div>    <!-- row -->#}
-{#                        </form>#}
-{#                        <ul class="comment-list list-unstyled">#}
-{#                            {% for comment in comment_list %}#}
-{#                                <li class="comment-item">#}
-{#                                    <span class="nickname">{{ comment.nickname }}</span>#}
-{#                                    <time class="submit-date">{{ comment.created_time }}</time>#}
-{#                                    <div class="text">#}
-{#                                        {{ comment.content }}#}
-{#                                    </div>#}
-{#                                </li>#}
-{#                            {% empty %}#}
-{#                                暂无评论#}
-{#                            {% endfor %}#}
-{#                        </ul>#}
-                                        <div id="disqus_thread"></div>
 
-                                        <script>
-                                            /**
-                                             *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                                             *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
-                                            /*
-                                            var disqus_config = function () {
-                                            this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-                                            this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-                                            };
-                                            */
-                                            (function () { // DON'T EDIT BELOW THIS LINE
-                                                var d = document, s = d.createElement('script');
-                                                s.src = 'https://makefriend.disqus.com/embed.js';
-                                                s.setAttribute('data-timestamp', +new Date());
-                                                (d.head || d.body).appendChild(s);
-                                            })();
-                                        </script>
-                                        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
-                                            powered by Disqus.</a></noscript>
+                    <div id="disqus_thread"></div>
+
+                    <script>
+                        /**
+                         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                        /*
+                        var disqus_config = function () {
+                        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        };
+                        */
+                        (function () { // DON'T EDIT BELOW THIS LINE
+                            var d = document, s = d.createElement('script');
+                            s.src = 'https://makefriend.disqus.com/embed.js';
+                            s.setAttribute('data-timestamp', +new Date());
+                            (d.head || d.body).appendChild(s);
+                        })();
+                    </script>
+                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
+                        powered by Disqus.</a></noscript>
                 </div>
                 {{ block.super }}
             </div>

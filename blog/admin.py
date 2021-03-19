@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 import logging
-from makefriends.custom_site import custom_site
+
 from .models import Post, Category, Tag
 from utils.qiniu.uploadFile import qiniu_upload
 
@@ -84,11 +84,11 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = [
-        'title', 'category', 'status', 'owner', 'desc',
+        'title', 'category', 'status', 'desc',
         'created_time', 'operator'
     ]
     list_display_links = []  # 用来配置哪些字段可以作为连接，点击它们，可以进入编辑页面。
-
+    list_per_page = 20
     list_filter = [CategoryOwnerFilter, 'status', 'tag']  # 配置页面过滤器，需要通过哪些字段来过滤列表页
     search_fields = ['title', 'category__name']  # 配置搜索字段。
 
