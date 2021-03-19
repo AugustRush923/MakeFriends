@@ -2,6 +2,7 @@ import markdown
 from django.db import models
 from django.core.cache import cache
 from django.db.models import Count, Case, When
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.utils.functional import cached_property
 import mistune
@@ -45,7 +46,7 @@ class Category(models.Model):
         #         normal_categories.append(cate)
         navs = cache.get('navs')
         if not navs:
-            navs = cls.objects.filter(is_nav=True).annotate(
+            navs = cls.objects.filter(Q(is_nav=True) & Q(status=cls.STATUS_NORMAL)).annotate(
                 num_posts=Count(Case(When(post__status__exact=1, then=1))))
         cache.set('navs', navs)
         return {

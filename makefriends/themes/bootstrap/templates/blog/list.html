@@ -64,7 +64,7 @@
                                 {% endif %}
                                 {% if left %}
                                     {% if left_has_more %}
-                                        <span>...</span>
+                                        <li><span>...</span></li>
                                     {% endif %}
                                     {% for i in left %}
                                         <li><a href="?page={{ i }}">{{ i }}</a></li>
@@ -77,7 +77,7 @@
                                         <li><a href="?page={{ i }}">{{ i }}</a></li>
                                     {% endfor %}
                                     {% if right_has_more %}
-                                        <span>...</span>
+                                        <li><span>...</span></li>
                                     {% endif %}
                                 {% endif %}
                                 {% if last %}

@@ -44,5 +44,10 @@ urlpatterns = [
 
 ]
 
+admin.site.site_header = 'August Rush\'s Blog System'
+admin.site.site_title = f'{admin.site.site_header}后台管理系统'
+admin.site.index_title = f"欢迎使用{admin.site.site_header}后台管理系统"
+admin.site.disable_action('delete_selected')
+
 handler404 = views.HandleError.page_not_found
 handler500 = views.HandleError.internal_server_error
