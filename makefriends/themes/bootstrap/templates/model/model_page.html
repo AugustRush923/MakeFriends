@@ -1,0 +1,109 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% block title %}
+    <title>模型柜 - Hi,AugustRush</title>
+{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static "css/models.css" %}">
+    <link href="{% static "css/zoom.css" %}" rel="stylesheet">
+
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="blog-main">
+                        <h2>AugustRush那些帅气的模型</h2>
+                        {% for model in models %}
+                            <div class="grid-item">
+                                <div class="left">
+                                    {% if model.img %}
+                                        <img class="imgSrc" src="https://cdn.hdcheung.cn/{{ model.img }}"
+                                             data-action="zoom"/>
+                                    {% else %}
+                                        <div class="failed-load">
+                                            <strong>暂无图片上传</strong>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="right">
+                                    <p>
+                                        <strong>名称:</strong>
+                                        {{ model.name }}
+                                    </p>
+                                    <p>
+                                        <strong>发售日：</strong>
+                                        {{ model.sale_date | date:"Y-m-d" }}
+                                    </p>
+                                    <p>
+                                        <strong>模型品牌：</strong>
+                                        {{ model.brand }}
+                                    </p>
+                                    <p>
+                                        <strong>系列：</strong>
+                                        {{ model.series }}
+                                    </p>
+                                    <p>
+                                        <strong>比例：</strong>
+                                        {{ model.size }}
+                                    </p>
+                                    <p>
+                                        <strong>角色：</strong>
+                                        {{ model.character }}
+                                    </p>
+                                    <p>
+                                        <strong>作品：</strong>
+                                        {{ model.works }}
+                                    </p>
+                                    <p>
+                                        <strong>购入价格：</strong>
+                                        {{ model.price }}
+                                    </p>
+                                    <p>
+                                        <strong>图册链接：</strong>
+                                        {% if model.album %}
+                                            <a href="{{ model.album }}" target="_blank" >{{ model.character }}图册</a>
+                                        {% else %}
+                                            暂无图册...
+                                        {% endif %}
+
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <br>
+
+                    </div>
+                    <div id="disqus_thread"></div>
+                    <script>
+                        /**
+                         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                        /*
+                        var disqus_config = function () {
+                        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                        };
+                        */
+                        (function () { // DON'T EDIT BELOW THIS LINE
+                            var d = document, s = d.createElement('script');
+                            s.src = 'https://makefriend.disqus.com/embed.js';
+                            s.setAttribute('data-timestamp', +new Date());
+                            (d.head || d.body).appendChild(s);
+                        })();
+                    </script>
+                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
+                        powered by Disqus.</a></noscript>
+                </div>
+                {{ block.super }}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block jsBlock %}
+    <script src="{% static "js/zoom.js" %}"></script>
+{% endblock %}

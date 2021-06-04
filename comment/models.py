@@ -21,8 +21,3 @@ class Comment(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = '评论'
-
-    @classmethod
-    def get_by_target(cls, target):
-        queryset = cls.objects.filter(target=target, status=cls.STATUS_NORMAL)
-        return queryset

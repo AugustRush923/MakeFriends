@@ -65,6 +65,8 @@ db.sqlite3
 db.sqlite3-journal
 *.rdb
 migrations/
+.qiniu_pythonsdk_hostscache.json
+
 # Flask stuff:
 instance/
 .webassets-cache

@@ -1,8 +1,7 @@
 import markdown
 from django.db import models
 from django.core.cache import cache
-from django.db.models import Count, Case, When
-from django.db.models import Q
+from django.db.models import Count, Case, When, Q
 from django.contrib.auth.models import User
 from django.utils.functional import cached_property
 import mistune
@@ -48,11 +47,14 @@ class Category(models.Model):
         if not navs:
             navs = cls.objects.filter(Q(is_nav=True) & Q(status=cls.STATUS_NORMAL)).annotate(
                 num_posts=Count(Case(When(post__status__exact=1, then=1))))
-        cache.set('navs', navs)
+            cache.set('navs', navs, timeout=60*60*24)
+
         return {
             # Category.objects.annotate(Count(Case(When(post__status__exact=1, then=1))))
             # 'navs': cls.objects.filter(is_nav=True).annotate(num_posts=Count('post')),
-            'navs': navs,
+            # 'navs': cls.objects.filter(is_nav=True).annotate(
+            #     num_posts=Count(Case(When(post__status__exact=1, then=1)))),
+            'navs': navs
             # Django 2.0+
             # 'navs': cls.objects.filter(is_nav=True).annotate(num_posts=Count('post', filter=Q(post__status=1)),
             # 'categories': normal_categories,
@@ -85,10 +87,10 @@ class Tag(models.Model):
     def get_tags(cls):
         # tag_list = cls.objects.annotate(num_posts=Count('post')).filter(status__exact=cls.STATUS_NORMAL)
         tag_list = cache.get('tag_list')
-        if not tag_list:
+        if tag_list is None:
             tag_list = cls.objects.filter(status=cls.STATUS_NORMAL).annotate(
                 num_posts=Count(Case(When(post__status__exact=1, then=1))))
-        cache.set('tag_list', tag_list)
+            cache.set('tag_list', tag_list, timeout=60*60*24)
         return tag_list
 
 
@@ -141,34 +143,40 @@ class Post(models.Model):
     @classmethod
     def latest_posts(cls):
         latest_posts = cache.get('latest_posts')
-        if not latest_posts:
-            latest_posts = cls.objects.filter(status=cls.STATUS_NORMAL)
-        cache.set('latest_post', latest_posts)
+        if latest_posts is None:
+            latest_posts = cls.objects.filter(status=cls.STATUS_NORMAL).select_related('category', 'owner')\
+                .prefetch_related('tag').defer('content', 'content_markdown', 'content_html')
+            cache.set('latest_posts', latest_posts)
         return latest_posts
 
     @classmethod
     def hot_posts(cls):
         hot_posts = cache.get('hot_posts')
-        if not hot_posts:
-            hot_posts = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')[:12]
-        cache.set('hot_posts', hot_posts)
+        if hot_posts is None:
+            hot_posts = cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv').values('id', 'title', 'pv')[:12]
+            cache.set('hot_posts', hot_posts, timeout=60*60*24)
         return hot_posts
 
     @classmethod
     def archives(cls):
-        dates = cls.objects.datetimes('created_time', 'month', order='DESC')
-        return dates
+        dates_year = cache.get('dates_year')
+        if dates_year is None:
+            dates_year = cls.objects.filter(status=1).dates('created_time', 'year', order='DESC')
+            cache.set('dates_year', dates_year, timeout=60*60*24)
+        return dates_year
 
-    @classmethod
-    def about_me(cls):
-        queryset = cls.objects.filter(title__exact='关于帅气的August Rush')
-        return queryset
+    # @classmethod
+    # def about_me(cls):
+    #     queryset = cls.objects.filter(title__exact='关于帅气的August Rush')
+    #     return queryset
 
-    @classmethod
-    def summary(cls):
-        queryset = cls.objects.filter(title__contains='年终总结')
-        return queryset
+    # @classmethod
+    # def summary(cls):
+    #     queryset = cls.objects.filter(title__contains='年终总结')
+    #     return queryset
 
-    @cached_property
-    def tags(self):
-        return ','.join(self.tag.values_list('name', flat=True))
+    # @cached_property
+    # def tags(self):
+    #     qs = ','.join(self.tag.values_list('name', flat=True))
+    #     print(qs)
+    #     return qs

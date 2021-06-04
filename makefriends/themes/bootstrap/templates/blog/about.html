@@ -1,14 +1,11 @@
-{% extends "base.html" %}
+{% extends "./base.html" %}
+{% load cache %}
 
 {% block title %}
-    <title>关于 - AugustRush923</title>
+    <title>关于Me - Hi,AugustRush</title>
 {% endblock %}
 {% block extra_head %}
-
-{% endblock %}
-
-{% block content %}
-    <style>
+    <style type="text/css">
         table {
             font-family: verdana, arial, sans-serif;
             font-size: 11px;
@@ -30,27 +27,33 @@
             background-color: #ffffff;
         }
     </style>
+{% endblock %}
+{% block content %}
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-md-9">
                     <div class="post-archive">
                         <div class="blog-main">
+                            {% cache 600 about_post_label %}
                             <div class="heading-blog">
                                 {{ about_post.title }}
                             </div>
                             发布：{{ about_post.created_time | date:"Y年m月d日" }} |
                             作者：{{ about_post.owner }} |
+                            {% endcache %}
                             阅读量: {{ about_post.pv }}
+                            {% cache 600 about_post_content %}
                             <div class="blog-txt">
                                 {% autoescape off %}
                                     {% load emoji_tags %}
                                     {{ about_post.toc | safe }}
                                     {{ about_post.content_markdown | emoji_replace }}
-                                    {#                                    {{ about_post.content_markdown | emoji_replace_unicode }}#}
-                                    {#                                    {{ about_post.content_markdown | emoji_replace_html_entities }}#}
+                                    {#{{ about_post.content_markdown | emoji_replace_unicode }}#}
+                                    {#{{ about_post.content_markdown | emoji_replace_html_entities }}#}
                                 {% endautoescape %}
                             </div>
+                            {% endcache %}
                         </div>
                     </div>
                     <div id="disqus_thread"></div>

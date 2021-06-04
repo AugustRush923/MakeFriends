@@ -1,17 +1,18 @@
-{% extends "base.html" %}
+{% extends "./base.html" %}
 {% load static %}
+{% load cache %}
 
 {% block title %}
     {% if tag %}
         <title>
             {% for tag in tag %}
-                {{ tag.name }} - AugustRush923
+                {{ tag.name }} - Hi,AugustRush
             {% endfor %}
         </title>
     {% elif cate %}
         <title>
             {% for cate in cate %}
-                {{ cate }} - AugustRush923
+                {{ cate }} - Hi,AugustRush
             {% endfor %}
         </title>
     {% endif %}
@@ -64,7 +65,7 @@
                                 {% endif %}
                                 {% if left %}
                                     {% if left_has_more %}
-                                        <li><span>...</span></li>
+                                         <li><span>...</span></li>
                                     {% endif %}
                                     {% for i in left %}
                                         <li><a href="?page={{ i }}">{{ i }}</a></li>

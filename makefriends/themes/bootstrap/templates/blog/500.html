@@ -1,0 +1,43 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}
+    <title>500 — 似乎服务器发生了车祸... | QwQ,AugustRush</title>
+{% endblock %}
+{% block extra_head %}
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="blog-main">
+                        <div class="heading-blog">
+                            500 — 似乎服务器发生了车祸...
+                        </div>
+                        你可能需要：
+                        <div class="blog-txt">
+                            <ul>
+                                <li>
+                                    <a href="{% url 'index' %}">返回首页</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'archives' %}">所有文章</a>
+                                </li>
+                                <li>搜索文章:</li>
+                                <form class="form-inline" action="/search/" method="get">
+                                    <input class="form-control" type="search" name="keyword" placeholder="Search"
+                                           aria-label="Search"
+                                           value="{{ keyword }}">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <span class="glyphicon glyphicon-search" aria-hidden="true"> 搜索</span>
+                                    </button>
+                                </form>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

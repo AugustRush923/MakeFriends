@@ -1,58 +1,27 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
-import logging
+from django.core.cache import cache
 
 from .models import Post, Category, Tag
+from blog.actions import make_status_normal, make_status_delete
+from blog.filters import CategoryOwnerFilter
 from utils.qiniu.uploadFile import qiniu_upload
 
 # Register your models here.
 
 
-logger = logging.getLogger('django')
-
-
-def make_obj_delete(modeladmin, requests, queryset):
-    queryset.update(status=0)
-    modeladmin.message_user(requests, '修改成功')
-
-
-def make_obj_normal(modeladmin, request, queryset):
-    queryset.update(status=1)
-    modeladmin.message_user(request, "修改成功")
-
-
-make_obj_normal.short_description = "更改状态为正常"
-make_obj_delete.short_description = "更改状态为删除"
-
-
-class CategoryOwnerFilter(admin.SimpleListFilter):
-    """ 自定义过滤器：只展示当前用户分类 """
-    title = '分类过滤器'  # 用于展示标题
-    # 查询时URL参数的名字，比如查询分类id为1的内容时，URL后面的query部分是?owner_category=1.此时就可以通过我们的过滤器拿到这个id，从而进行过滤
-    parameter_name = 'owner_category'
-
-    def lookups(self, request, model_admin):  # 返回要展示的内容和查询用的id
-        return Category.objects.filter(owner=request.user).values_list('id', 'name')
-
-    def queryset(self, request, queryset):  # 根据URL Query的内容返回列表页数据。
-        category_id = self.value()
-        if category_id:
-            return queryset.filter(category_id=self.value())
-        return queryset
-
-
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    list_per_page = 15
     list_display = ('name', 'status', 'owner', 'is_nav', 'created_time', 'post_count')
     fields = ('name', 'status', 'is_nav')
     list_filter = ('status', 'is_nav')
-    actions = (make_obj_delete, make_obj_normal)
-    actions_on_top = True
-    actions_on_bottom = True
+    actions = (make_status_normal, make_status_delete, 'make_is_nav_true', 'make_is_nav_false')
 
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
+
         return super(CategoryAdmin, self).save_model(request, obj, form, change)
 
     def post_count(self, obj):
@@ -60,16 +29,27 @@ class CategoryAdmin(admin.ModelAdmin):
 
     post_count.short_description = "文章数量"
 
+    def make_is_nav_true(self, requests, queryset):
+        queryset.update(is_nav=True)
+        self.message_user(requests, "修改成功！")
+
+    make_is_nav_true.short_description = "设置所选分类名为导航"
+
+    def make_is_nav_false(self, requests, queryset):
+        queryset.update(is_nav=False)
+        self.message_user(requests, "修改成功！")
+
+    make_is_nav_false.short_description = "取消所选分类名为导航"
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
+    list_per_page = 15
     list_display = ('name', 'status', 'created_time')
     fields = ('name', 'status')
     search_fields = ('name',)
     list_filter = ('status',)
-    actions = (make_obj_delete, make_obj_normal)
-    actions_on_top = True
-    actions_on_bottom = True
+    actions = (make_status_normal, make_status_delete)
 
     @qiniu_upload
     def save_model(self, request, obj, form, change):
@@ -83,16 +63,18 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
+    list_per_page = 20
+
     list_display = [
-        'title', 'category', 'status', 'desc',
+        'title', 'category', 'status', 'owner', 'desc',
         'created_time', 'operator'
     ]
     list_display_links = []  # 用来配置哪些字段可以作为连接，点击它们，可以进入编辑页面。
-    list_per_page = 20
+
     list_filter = [CategoryOwnerFilter, 'status', 'tag']  # 配置页面过滤器，需要通过哪些字段来过滤列表页
     search_fields = ['title', 'category__name']  # 配置搜索字段。
 
-    actions = (make_obj_delete, make_obj_normal)
+    actions = (make_status_normal, make_status_delete)
     actions_on_top = True
     actions_on_bottom = True
 
@@ -101,7 +83,6 @@ class PostAdmin(admin.ModelAdmin):
     exclude = ('owner',)
 
     fieldsets = (  # fieldsets用来控制页面布局
-
         ('基础配置', {
             'description': '基础配置描述',
             'fields': (

@@ -26,12 +26,12 @@ body {
 }
 
 .table th, .table td {
-    text-align: center !important;
+    text-align: center;
     vertical-align: middle !important;
 }
 
 .table td {
-    font-size: 15px !important;
+    font-size: 15px;
 }
 
 .header-section {
@@ -117,23 +117,30 @@ body {
     display: inline-block !important;
 }
 
-.blog-txt table {
-    font-family: verdana, arial, sans-serif;
-    font-size: 11px;
-    color: #333333;
-    border-width: 1px;
-    border-color: #666666;
-    border-collapse: collapse;
+.hljs-ln-numbers {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    text-align: right;
+    color: #000000;
+    border-right: 2px solid #696969;
+    vertical-align: top;
+    padding-right: 5px;
+    /* your custom style here */
 }
 
-.blog-txt table th {
-    opacity: 0;
+.hljs-ln-code {
+    padding-left: 10px !important;
 }
 
-.blog-txt table td {
-    border-width: 1px;
-    padding: 8px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #ffffff;
+.hljs-ln td {
+    padding-right: 5px !important;
+}
+
+.blog-txt h1,.blog-txt h2,.blog-txt h3,.blog-txt h4,.blog-txt h5,.blog-txt h6 {
+    color: #1874CD !important;
 }

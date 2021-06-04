@@ -1,11 +1,45 @@
-{% extends "base.html" %}
+{% extends "./base.html" %}
 {% load static %}
 
 {% block title %}
-    <title>{{ post.title }} | AugustRush923</title>
+    <title>{{ post.title }} | Hi, AugustRush</title>
 {% endblock %}
+{% block extra_head %}
+    <style type="text/css">
+        /*table {*/
+        /*    font-family: verdana, arial, sans-serif;*/
+        /*    font-size: 11px;*/
+        /*    color: #333333;*/
+        /*    border-width: 1px;*/
+        /*    border-color: #666666;*/
+        /*    border-collapse: collapse;*/
+        /*}*/
 
+        table thead tr th {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+        }
+
+        table tbody tr td {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static "css/vs.css" %}">
+    <script src="{% static "js/highlight.min.js" %}"></script>
+    <!--<script src="{% static "js/highlightjs-line-numbers.js" %}"></script>-->
+{% endblock %}
 {% block content %}
+    <script>hljs.initHighlightingOnLoad();</script>
+<!--    <script>hljs.initLineNumbersOnLoad({-->
+<!--        singleLine: true-->
+<!--    });</script>-->
     <section>
         <div class="container">
             <div class="row">
@@ -21,7 +55,7 @@
                             {% autoescape off %}
                                 {% load emoji_tags %}
                                 {{ post.toc | safe }}
-                                {#                                {{ post.content_markdown | safe }}#}
+<!--                                {{ post.content_markdown | safe }}-->
                                 {{ post.content_markdown | emoji_replace }}
                                 {#                                {{ post.content_markdown | emoji_replace_unicode }}#}
                                 {#                                {{ post.content_markdown  | emoji_replace_html_entities }}#}
@@ -38,9 +72,9 @@
                             {% endif %}
                         </div>
                     </div>
-
-                    <div id="disqus_thread"></div>
-
+                    <div class="comment-container">
+                        <div id="disqus_thread"></div>
+                    </div>
                     <script>
                         /**
                          *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
@@ -60,9 +94,14 @@
                     </script>
                     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
                         powered by Disqus.</a></noscript>
+
                 </div>
                 {{ block.super }}
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block jsBlock %}
+    <script id="dsq-count-scr" src="https://makefriend.disqus.com/count.js" async></script>
 {% endblock %}

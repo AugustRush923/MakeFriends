@@ -3,36 +3,32 @@ from django.core.cache import cache
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
-from django.views import View
 from django.views.generic import ListView, DetailView
-from djpjax import PJAXResponseMixin
 
 from .models import Post, Tag, Category
-from comment.models import Comment
-from comment.forms import CommentForm
 from celery_tasks.count.tasks import increase_PV, increase_UV, increase_both
-
-
 # Create your views here.
 
 
+# 公共资源类
 class CommonViewMixin:
+    # 获取上下文方法
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'tag_list': Tag.get_tags(),
-            'category': Category.get_navs(),
-            'hot_post': Post.hot_posts(),
+            'tag_list': Tag.get_tags(),  # 获取tag标签
+            'category': Category.get_navs(),  # 获取分类
+            'hot_post': Post.hot_posts(),  # 获取热门文章
         })
         return context
 
 
-class IndexView(CommonViewMixin, PJAXResponseMixin, ListView):
+# 首页基类
+class IndexView(CommonViewMixin, ListView):
     queryset = Post.latest_posts()
     paginate_by = 7
     context_object_name = 'post_list'
     template_name = 'blog/list.html'
-    pjax_template_name = 'blog/list.html'
     ordering = '-created_time'
 
     def get_context_data(self, **kwargs):
@@ -91,53 +87,45 @@ class IndexView(CommonViewMixin, PJAXResponseMixin, ListView):
 
 
 class CategoryView(IndexView):
-    ordering = '-pv'
-
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(CategoryView, self).get_context_data(**kwargs)
         category_name = self.kwargs.get('category_name')
         try:
             category = Category.objects.filter(name=category_name)
         except Category.DoesNotExist:
-            raise Http404()
+            raise Http404("Does not exist.")
         context.update({
             'cate': category,
         })
+
         return context
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super(CategoryView, self).get_queryset()
         category_name = self.kwargs.get('category_name')
         return queryset.filter(category__name=category_name)
 
 
 class ArchivesView(IndexView):
     template_name = 'blog/archives.html'
-    pjax_template_name = 'blog/archives.html'
     paginate_by = False
 
     def get_context_data(self, **kwargs):
         context = super(ArchivesView, self).get_context_data()
-        dates = cache.get('dates')
-        if not dates:
-            dates = Post.objects.filter(status=1).dates('created_time', 'year', order='DESC')
-        cache.set('dates', dates)
         context.update({
-            'dates': dates
+            'dates': Post.archives()
         })
         return context
 
 
 class TagView(IndexView):
-    ordering = '-pv'
-
     def get_context_data(self, **kwargs):
         context = super(TagView, self).get_context_data(**kwargs)
         tag_name = self.kwargs.get('tag_name')
         try:
             tag = Tag.objects.filter(name=tag_name)
         except Tag.DoesNotExist:
-            raise Http404()
+            raise Http404("Does not exist.")
         context.update({
             'tag': tag
         })
@@ -149,10 +137,9 @@ class TagView(IndexView):
         return queryset.filter(tag__name=tag_name)
 
 
-class PostDetailView(CommonViewMixin, PJAXResponseMixin, DetailView):
+class PostDetailView(CommonViewMixin, DetailView):
     queryset = Post.latest_posts()
     template_name = 'blog/detail.html'
-    pjax_template_name = 'blog/detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
 
@@ -160,16 +147,12 @@ class PostDetailView(CommonViewMixin, PJAXResponseMixin, DetailView):
         context = super(PostDetailView, self).get_context_data()
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, pk=post_id)
-
         context.update({
             # 'pre_post': Post.objects.filter(status=1).filter(created_time__gt=post.created_time).last(),
             'pre_post': Post.objects.filter(Q(status=1) & Q(created_time__lt=post.created_time)).first(),
             # 'next_post': Post.objects.filter(status=1).filter(created_time__lt=post.created_time).first(),
             'next_post': Post.objects.filter(Q(status=1) & Q(created_time__gt=post.created_time)).last(),
-            'comment_form': CommentForm,
-            'comment_list': Comment.get_by_target(post_id),
         })
-        print(context)
         return context
 
     def get(self, request, *args, **kwargs):
@@ -211,7 +194,7 @@ class SearchView(IndexView):
         keyword = self.request.GET.get('keyword')
         if not keyword:
             return queryset
-        result = queryset.filter(Q(title__contains=keyword) | Q(desc__contains=keyword))
+        result = queryset.filter(Q(title__icontains=keyword) | Q(desc__icontains=keyword))
         if not result:
             raise Http404
         return result
@@ -225,14 +208,19 @@ class AuthorView(IndexView):
 
 
 class AboutView(PostDetailView):
-    queryset = Post.about_me()
+    # queryset = None
     template_name = 'blog/about.html'
-    pjax_template_name = 'blog/about.html'
     context_object_name = 'about_post'
     pk_url_kwarg = 'about'
 
-    def get_object(self, queryset=queryset):
-        queryset = queryset.filter(title='关于帅气的August Rush')
+    def get_queryset(self):
+        return Post.objects\
+            .filter(title__exact='关于帅气的August Rush')\
+            .only('id', 'title', 'content_markdown', 'owner', 'created_time', 'pv')
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
         try:
             obj = queryset.get()
         except queryset.model.DoesNotExist:
@@ -245,15 +233,20 @@ class AboutView(PostDetailView):
 
 
 class SummaryView(PostDetailView):
-    queryset = Post.summary()
+    # queryset = Post.summary()
     template_name = 'blog/summary.html'
-    pjax_template_name = 'blog/summary.html'
     context_object_name = 'summary'
     pk_url_kwarg = 'summary_year'
 
-    def get_object(self, queryset=queryset):
+    def get_queryset(self):
+        return Post.objects.filter(title__contains='年终总结')
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
         pk = self.kwargs.get(self.pk_url_kwarg)
-        queryset = queryset.filter(title=f'{pk}年终总结')
+        queryset = queryset.filter(title=f'{pk}年终总结')\
+            .only('id', 'title', 'content_markdown', 'owner', 'created_time', 'pv')
         try:
             obj = queryset.get()
         except queryset.model.DoesNotExist:
@@ -267,7 +260,7 @@ class SummaryView(PostDetailView):
 
 class HandleError:
     def page_not_found(request):
-        return render(request, 'errors/404.html')
+        return render(request, 'blog/404.html')
 
     def internal_server_error(request):
-        return render(request, 'errors/500.html')
+        return render(request, 'blog/500.html')
