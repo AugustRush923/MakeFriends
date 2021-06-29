@@ -41,7 +41,8 @@ class Model(models.Model):
     def get_models(cls):
         models = cache.get('models')
         if not models:
-            models = cls.objects.filter(status=1).order_by('created_time')
+            models = cls.objects.filter(status=1).order_by('created_time').defer("status", "created_time")
+            cache.set('models', models, timeout=60*15)
         return models
 
     def img_field(self):
