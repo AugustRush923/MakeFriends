@@ -28,7 +28,6 @@ class PerformanceMiddleware(MiddlewareMixin):
         super(PerformanceMiddleware, self).__init__(get_response)
 
     def process_request(self, request):
-        print(request.path_info)
         request.start_time = time.time()
 
     def process_response(self, request, response):
