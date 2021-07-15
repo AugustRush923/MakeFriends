@@ -98,7 +98,8 @@
                 <strong>标签云</strong> <i class="fa fa-tags"></i>
             </li>
             <li class="list-group-item">
-                <img src="https://cdn.hdcheung.cn/static/img/wordcloud.png" alt="word-cloud" class="img-responsive">
+                {#                <img src="https://cdn.hdcheung.cn/static/img/wordcloud.png" alt="word-cloud" class="img-responsive">#}
+                <div id="wordcloud" style="width:233px;height: 180px"></div>
             </li>
         </ul>
         <ul class="list-group">
@@ -189,6 +190,65 @@
 <script src="{% static "js/all.min.js" %}"></script>
 <script src="{% static "js/bootstrap.min.js" %}"></script>
 <script src="{% static "js/backtop.js" %}"></script>
+<script src='https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js'></script>
+<script src="{% static "js/echarts-wordcloud.js" %}"></script>
+
+<script>
+    var chart = echarts.init(document.getElementById('wordcloud'));
+    var option = {
+        tooltip: {},
+        series: [{
+            type: 'wordCloud',
+            gridSize: 2,
+            sizeRange: [12, 50],
+            rotationRange: [0, 90],
+            shape: 'circle',
+            left: 'center',
+            top: 'center',
+            right: null,
+            bottom: null,
+            width: '90%',
+            height: '110%',
+            drawOutOfBound: true,
+            textStyle: {
+
+                //颜色可以作为回调函数或颜色字符串
+                color: function () {
+                    //随机
+                    return 'rgb(' + [
+                        Math.round(Math.random() * 160),
+                        Math.round(Math.random() * 160),
+                        Math.round(Math.random() * 160)
+                    ].join(',') + ')';
+                }
+
+            },
+            emphasis: {
+                textStyle: {
+                    shadowBlur: 10,
+                    shadowColor: '#333'
+                }
+            },
+            data: [
+                {% for tag in tag_list %}
+                    {"name": "{{tag.name}}", "value": {{ tag.num_posts}}},
+                {% endfor %}
+            ]
+        }]
+    };
+
+    chart.setOption(option);
+
+    var ecConfig = echarts.config;
+    chart.on('click', eConsole);
+
+    function eConsole(param) {
+        console.log(param.data.name)
+        if (typeof param.seriesIndex != 'undefined') {
+            window.location.href = "https://hdcheung.cn/tag/" + param.data.name + "/";
+        }
+    }
+</script>
 {% block jsBlock %}
 
 {% endblock %}

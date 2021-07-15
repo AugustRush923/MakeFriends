@@ -24,6 +24,7 @@ a {
     box-sizing: border-box;
     margin: auto;
     padding: 3px;
+    object-fit: contain;
 }
 
 .right {
