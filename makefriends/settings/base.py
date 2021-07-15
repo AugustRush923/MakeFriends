@@ -121,7 +121,7 @@ USE_L10N = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/typeidea/static/'
+STATIC_ROOT = '/home/MakeFriends/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'themes', THEME, "static")

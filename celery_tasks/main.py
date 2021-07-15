@@ -1,7 +1,7 @@
 from celery import Celery
 import os
 if not os.getenv('DJANGO_SETTINGS_MODULE'):
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'makefriends.settings.develop'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'makefriends.settings.production'
 
 app = Celery("celery_tasks")
 
