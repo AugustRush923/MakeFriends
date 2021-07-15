@@ -7,6 +7,11 @@ __pycache__/
 *.sql
 *.xml
 
+static/
+# Configuration file
+*.ini
+*.conf
+
 # C extensions
 *.so
 sms_test/
