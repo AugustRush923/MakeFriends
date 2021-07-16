@@ -4,6 +4,10 @@
     <title>友情链接 - Hi,AugustRush</title>
 {% endblock %}
 
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static "css/disqusjs.css" %}">
+    <script src="{% static "js/disqus.js" %}"></script>
+{% endblock %}
 
 {% block content %}
     <section>
@@ -53,24 +57,18 @@
                     </div>
                     <div id="disqus_thread"></div>
                     <script>
-                        /**
-                         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
-                        /*
-                        var disqus_config = function () {
-                        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-                        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-                        };
-                        */
-                        (function () { // DON'T EDIT BELOW THIS LINE
-                            var d = document, s = d.createElement('script');
-                            s.src = 'https://makefriend.disqus.com/embed.js';
-                            s.setAttribute('data-timestamp', +new Date());
-                            (d.head || d.body).appendChild(s);
-                        })();
+                        var dsqjs = new DisqusJS({
+                            shortname: 'makefriend',
+                            siteName: 'AugustRush\'s Blog',
+                            identifier: document.location.origin + document.location.pathname + document.location.search,
+                            url: document.location.origin + document.location.pathname + document.location.search,
+                            title: document.title,
+                            api: 'https://disqus.skk.moe/disqus/',
+                            apikey: 'gr7ot6RhTwwVQEmlaKlBsKJHLQyZOo9Gda8j5WOySNDdJe0wOlynoNnUkzbxxisD',
+                            admin: 'AugustRush0923',
+                            adminLabel: '阿东东东啊啊啊~'
+                        });
                     </script>
-                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
-                        powered by Disqus.</a></noscript>
                 </div>
                 {{ block.super }}
             </div>

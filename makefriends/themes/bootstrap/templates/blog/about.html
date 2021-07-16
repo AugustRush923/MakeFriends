@@ -1,6 +1,6 @@
 {% extends "./base.html" %}
 {% load cache %}
-
+{% load static %}
 {% block title %}
     <title>关于Me - Hi,AugustRush</title>
 {% endblock %}
@@ -27,6 +27,8 @@
             background-color: #ffffff;
         }
     </style>
+    <link rel="stylesheet" href="{% static "css/disqusjs.css" %}">
+    <script src="{% static "js/disqus.js" %}"></script>
 {% endblock %}
 {% block content %}
     <section>
@@ -36,46 +38,40 @@
                     <div class="post-archive">
                         <div class="blog-main">
                             {% cache 600 about_post_label %}
-                            <div class="heading-blog">
-                                {{ about_post.title }}
-                            </div>
-                            发布：{{ about_post.created_time | date:"Y年m月d日" }} |
-                            作者：{{ about_post.owner }} |
+                                <div class="heading-blog">
+                                    {{ about_post.title }}
+                                </div>
+                                发布：{{ about_post.created_time | date:"Y年m月d日" }} |
+                                作者：{{ about_post.owner }} |
                             {% endcache %}
                             阅读量: {{ about_post.pv }}
                             {% cache 600 about_post_content %}
-                            <div class="blog-txt">
-                                {% autoescape off %}
-                                    {% load emoji_tags %}
-                                    {{ about_post.toc | safe }}
-                                    {{ about_post.content_markdown | emoji_replace }}
-                                    {#{{ about_post.content_markdown | emoji_replace_unicode }}#}
-                                    {#{{ about_post.content_markdown | emoji_replace_html_entities }}#}
-                                {% endautoescape %}
-                            </div>
+                                <div class="blog-txt">
+                                    {% autoescape off %}
+                                        {% load emoji_tags %}
+                                        {{ about_post.toc | safe }}
+                                        {{ about_post.content_markdown | emoji_replace }}
+                                        {#{{ about_post.content_markdown | emoji_replace_unicode }}#}
+                                        {#{{ about_post.content_markdown | emoji_replace_html_entities }}#}
+                                    {% endautoescape %}
+                                </div>
                             {% endcache %}
                         </div>
                     </div>
                     <div id="disqus_thread"></div>
                     <script>
-                        /**
-                         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
-                        /*
-                        var disqus_config = function () {
-                        this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-                        this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-                        };
-                        */
-                        (function () { // DON'T EDIT BELOW THIS LINE
-                            var d = document, s = d.createElement('script');
-                            s.src = 'https://makefriend.disqus.com/embed.js';
-                            s.setAttribute('data-timestamp', +new Date());
-                            (d.head || d.body).appendChild(s);
-                        })();
+                        var dsqjs = new DisqusJS({
+                            shortname: 'makefriend',
+                            siteName: 'AugustRush\'s Blog',
+                            identifier: document.location.origin + document.location.pathname + document.location.search,
+                            url: document.location.origin + document.location.pathname + document.location.search,
+                            title: document.title,
+                            api: 'https://disqus.skk.moe/disqus/',
+                            apikey: 'gr7ot6RhTwwVQEmlaKlBsKJHLQyZOo9Gda8j5WOySNDdJe0wOlynoNnUkzbxxisD',
+                            admin: 'AugustRush0923',
+                            adminLabel: '阿东东东啊啊啊~'
+                        });
                     </script>
-                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
-                        powered by Disqus.</a></noscript>
                 </div>
                 {{ block.super }}
             </div>
