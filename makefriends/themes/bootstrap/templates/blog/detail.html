@@ -24,8 +24,8 @@
     </style>
     <link rel="stylesheet" href="{% static "css/vs.css" %}">
     <script src="{% static "js/highlight.min.js" %}"></script>
-    <link rel="stylesheet" href="{% static "css/disqusjs.css" %}">
-    <script src="{% static "js/disqus.js" %}"></script>
+    <link rel="stylesheet" href="{% static "css/gitalk.css" %}">
+    <script src="{% static "js/gitalk.min.js" %}"></script>
 {% endblock %}
 {% block content %}
     <script>hljs.initHighlightingOnLoad();</script>
@@ -62,22 +62,20 @@
                         </div>
                     </div>
                     <div class="comment-container">
-                        <div id="disqus_thread"></div>
+                        <div id="gitalk-container"></div>
                     </div>
                     <script>
-                        var identifierurl = document.location.origin + document.location.pathname + document.location.search
-                        console.log(identifierurl)
-                        var dsqjs = new DisqusJS({
-                            shortname: 'makefriend',
-                            siteName: 'AugustRush\'s Blog',
-                            identifier: identifierurl,
-                            url: identifierurl,
-                            title: document.title,
-                            api: 'https://disqus.skk.moe/disqus/',
-                            apikey: 'gr7ot6RhTwwVQEmlaKlBsKJHLQyZOo9Gda8j5WOySNDdJe0wOlynoNnUkzbxxisD',
-                            admin: 'AugustRush0923',
-                            adminLabel: '阿东东东啊啊啊~'
-                        });
+                        var gitalk = new Gitalk({
+                            clientID: 'f31fcba4d2d810ef025d',
+                            clientSecret: '0fa36a31e9a48bb374d77b9403aa381b7b966246',
+                            repo: 'MakeFriendsTalk',
+                            owner: 'AugustRush923',
+                            admin: ['AugustRush923'],
+                            id: location.pathname,      // Ensure uniqueness and length less than 50
+                            distractionFreeMode: false  // Facebook-like distraction free mode
+                        })
+
+                        gitalk.render('gitalk-container')
                     </script>
 
                 </div>
@@ -88,5 +86,5 @@
 {% endblock %}
 
 {% block jsBlock %}
-{#    <script id="dsq-count-scr" src="https://makefriend.disqus.com/count.js" async></script>#}
+    {#    <script id="dsq-count-scr" src="https://makefriend.disqus.com/count.js" async></script>#}
 {% endblock %}
