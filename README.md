@@ -27,6 +27,7 @@ Nginx反向代理 + uWSGI + Supervisor + MySQL + Redis + Django 1.11.1 + Python 
 <br>
 
 ## Updates:
+* 2020-7-16: 评论系统由Disqus迁移到gitalk。
 
 * 2021-7-15：基于echarts词云图重构便签云。增加链接到对应tag页面
 
