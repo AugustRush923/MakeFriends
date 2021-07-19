@@ -1,4 +1,5 @@
 ﻿{% load static %}
+{% load cache %}
 <!DOCTYPE html>
 <html lang="zh-hans">
 <head>
@@ -19,11 +20,6 @@
     <link href="{% static "css/backtop.css" %}" rel="stylesheet" type="text/css">
 
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet" type="text/css">
-
-
-    <!-- APLAYER STYLE CSS   -->
-    <link rel="stylesheet" href="{% static "css/disqusjs.css" %}" type="text/css">
-    
     {% block extra_head %}
 
     {% endblock %}
@@ -51,13 +47,10 @@
     <ul class="nav nav-tabs nav-justified">
         <li role="presentation">
             <a href="/"><i class="fa fa-home"></i> 首页</a></li>
-        {#            <a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> 首页</a></li>#}
         <li role="presentation">
             <a href="{% url 'archives' %}"><i class="fa fa-list-alt"></i> 归档</a>
-            {#            <a href="{% url 'archives' %}"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> 归档</a>#}
         </li>
         <li role="presentation">
-            {#            <a href="{% url 'links' %}"><span class="glyphicon glyphicon-link" aria-hidden="true"></span> 友链</a>#}
             <a href="{% url 'links' %}"><i class="fa fa-link" aria-hidden="true"></i> 友链</a>
         </li>
         <li role="presentation">
@@ -88,7 +81,6 @@
             <input class="form-control" type="search" name="keyword" placeholder="Search" aria-label="Search"
                    value="{{ keyword }}">
             <button class="btn btn-outline-success" type="submit">
-                {#                搜索 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>#}
                 搜索 <i class="fas fa-search"></i>
             </button>
         </form>
@@ -98,7 +90,6 @@
                 <strong>标签云</strong> <i class="fa fa-tags"></i>
             </li>
             <li class="list-group-item">
-                {#                <img src="https://cdn.hdcheung.cn/static/img/wordcloud.png" alt="word-cloud" class="img-responsive">#}
                 <div id="wordcloud" style="width:233px;height: 180px"></div>
             </li>
         </ul>
@@ -110,7 +101,6 @@
             {% for hot in hot_post %}
                 <li class="list-group-item">
                     <a href="{% url 'post-detail' hot.id %}" role="button">{{ hot.title }}
-                        {#                        <span class="badge">阅读量： {{ hot.pv }}</span>#}
                     </a> - {{ hot.pv }} 阅读量
                 </li>
             {% empty %}
@@ -184,62 +174,64 @@
 <script src="{% static "js/echarts.min.js" %}"></script>
 <script src="{% static "js/echarts-wordcloud.js" %}"></script>
 
-<script>
-    var chart = echarts.init(document.getElementById('wordcloud'));
-    var option = {
-        tooltip: {},
-        series: [{
-            type: 'wordCloud',
-            gridSize: 2,
-            sizeRange: [12, 50],
-            rotationRange: [0, 90],
-            shape: 'circle',
-            left: 'center',
-            top: 'center',
-            right: null,
-            bottom: null,
-            width: '90%',
-            height: '110%',
-            drawOutOfBound: true,
-            textStyle: {
-
-                //颜色可以作为回调函数或颜色字符串
-                color: function () {
-                    //随机
-                    return 'rgb(' + [
-                        Math.round(Math.random() * 160),
-                        Math.round(Math.random() * 160),
-                        Math.round(Math.random() * 160)
-                    ].join(',') + ')';
-                }
-
-            },
-            emphasis: {
+{% cache 3600 wordcloud %}
+    <script>
+        var chart = echarts.init(document.getElementById('wordcloud'));
+        var option = {
+            tooltip: {},
+            series: [{
+                type: 'wordCloud',
+                gridSize: 2,
+                sizeRange: [12, 50],
+                rotationRange: [0, 90],
+                shape: 'circle',
+                left: 'center',
+                top: 'center',
+                right: null,
+                bottom: null,
+                width: '90%',
+                height: '110%',
+                drawOutOfBound: true,
                 textStyle: {
-                    shadowBlur: 10,
-                    shadowColor: '#333'
-                }
-            },
-            data: [
-                {% for tag in tag_list %}
-                    {"name": "{{tag.name}}", "value": {{ tag.num_posts}}},
-                {% endfor %}
-            ]
-        }]
-    };
 
-    chart.setOption(option);
+                    //颜色可以作为回调函数或颜色字符串
+                    color: function () {
+                        //随机
+                        return 'rgb(' + [
+                            Math.round(Math.random() * 160),
+                            Math.round(Math.random() * 160),
+                            Math.round(Math.random() * 160)
+                        ].join(',') + ')';
+                    }
 
-    var ecConfig = echarts.config;
-    chart.on('click', eConsole);
+                },
+                emphasis: {
+                    textStyle: {
+                        shadowBlur: 10,
+                        shadowColor: '#333'
+                    }
+                },
+                data: [
+                    {% for tag in tag_list %}
+                        {"name": "{{tag.name}}", "value": {{ tag.num_posts}}},
+                    {% endfor %}
+                ]
+            }]
+        };
 
-    function eConsole(param) {
-        console.log(param.data.name)
-        if (typeof param.seriesIndex != 'undefined') {
-            window.location.href = "https://hdcheung.cn/tag/" + param.data.name + "/";
+        chart.setOption(option);
+
+        var ecConfig = echarts.config;
+        chart.on('click', eConsole);
+
+        function eConsole(param) {
+            console.log(param.data.name)
+            if (typeof param.seriesIndex != 'undefined') {
+                window.location.href = "https://hdcheung.cn/tag/" + param.data.name + "/";
+            }
         }
-    }
-</script>
+    </script>
+{% endcache %}
 {% block jsBlock %}
 
 {% endblock %}
