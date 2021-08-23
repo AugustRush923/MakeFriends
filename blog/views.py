@@ -54,6 +54,8 @@ class IndexView(CommonViewMixin, ListView):
         page_number = page.number  # 获取用户当前请求的页码号
         total_pages = paginator.num_pages  # 获得分页后的总页数
         page_range = paginator.page_range  # 获得整个分页页码列表，比如分了4页，那么就是 [1,2,3,4]
+        pre_page = page.number - 4
+        next_page = page.number + 4
 
         if page_number == 1:
             """
@@ -105,6 +107,8 @@ class IndexView(CommonViewMixin, ListView):
             'right_has_more': right_has_more,
             'first': first,
             'last': last,
+            'next_page': next_page,
+            'pre_page': pre_page,
         }
         return data
 

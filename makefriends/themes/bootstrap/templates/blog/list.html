@@ -65,7 +65,7 @@
                                 {% endif %}
                                 {% if left %}
                                     {% if left_has_more %}
-                                         <li><span>...</span></li>
+                                         <li title="向前4页"><a href="?page={{ pre_page }}">...</a></li>
                                     {% endif %}
                                     {% for i in left %}
                                         <li><a href="?page={{ i }}">{{ i }}</a></li>
@@ -78,7 +78,7 @@
                                         <li><a href="?page={{ i }}">{{ i }}</a></li>
                                     {% endfor %}
                                     {% if right_has_more %}
-                                        <li><span>...</span></li>
+                                        <li title="向后4页"><a href="?page={{ next_page }}">...</a></li>
                                     {% endif %}
                                 {% endif %}
                                 {% if last %}
