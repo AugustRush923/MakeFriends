@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     # 'memcache_status',
     'mdeditor',
     'emoji',
-    'crispy_forms',
-    'reversion',
+    # 'crispy_forms',
+    # 'reversion',
 
     'blog.apps.BlogConfig',
     'config',

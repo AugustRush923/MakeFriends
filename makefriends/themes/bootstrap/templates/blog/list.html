@@ -45,7 +45,7 @@
                         <!--PAGING  BEGIN -->
                     {% endfor %}
                     <nav aria-label="Page navigation">
-                        {% if page_obj %}
+                        {% if is_paginated %}
                             <ul class="pagination">
                                 {% if page_obj.has_previous %}
                                     <li>

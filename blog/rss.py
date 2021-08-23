@@ -22,7 +22,7 @@ class LatestPostFeed(Feed):
 
     # 需要显示的内容条目
     def items(self):
-        return Post.objects.filter(status=Post.STATUS_NORMAL).order_by("-created_time")[:8]
+        return Post.objects.filter(status=Post.STATUS_NORMAL).order_by("-id")[:8]
 
     # 聚合器中显示的内容条目的标题
     def item_title(self, item):
