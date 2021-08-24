@@ -6,7 +6,6 @@ from django.core.cache import cache
 from .models import Post, Category, Tag
 from blog.actions import make_status_normal, make_status_delete
 from blog.filters import CategoryOwnerFilter
-from utils.qiniu.uploadFile import qiniu_upload
 
 # Register your models here.
 
@@ -51,12 +50,10 @@ class TagAdmin(admin.ModelAdmin):
     list_filter = ('status',)
     actions = (make_status_normal, make_status_delete)
 
-    @qiniu_upload
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
         return super(TagAdmin, self).save_model(request, obj, form, change)
 
-    @qiniu_upload
     def delete_model(self, request, obj):
         return super(TagAdmin, self).delete_model(request, obj)
 
