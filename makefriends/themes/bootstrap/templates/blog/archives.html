@@ -10,31 +10,60 @@
             <div class="row">
                 <div class="col-md-9">
                     <div class="blog-main">
-                        {% for date in dates %}
-                            <div class="django-panel django-panel-padding">
-                                <div class="mobile-archives">
-                                    <h3 class="archives-year">{{ date.year }}</h3>
+                        <div class="panel-group" id="accordion">
+                            {% for date in dates %}
+                                <div class="panel panel-primary ">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion"
+                                               href="#collapse{{ date.year }}">
+                                                {{ date.year }}
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div id="collapse{{ date.year }}" class="panel-collapse collapse in">
+                                        <div class="panel-body">
+                                            {% for post in post_list %}
+                                                {% if post.created_time.year == date.year %}
+                                                    <div class="list-group-item">
+                                                    <span class="date">
+                                                        {{ post.created_time | date:"Y/m/d" }}
+                                                    </span>
+                                                        <a href="{% url 'post-detail' post.id %}"
+                                                           title="{{ post.title }}">{{ post.title }}</a>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
                                 </div>
-                                <ul class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                    {% for post in post_list %}
-                                        {% if post.created_time.year == date.year %}
-                                            <div class="panel panel-default">
-                                                <li class="list-group-item">
-                                                    <span class="date">{{ post.created_time | date:"Y/m/d" }}</span>
-                                                    &nbsp; <a href="{% url 'post-detail' post.id %}"
-                                                              title="{{ post.title }}">{{ post.title }}</a>
-                                                </li>
-
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
                 {{ block.super }}
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block jsBlock %}
+    <script>
+        var myDate = new Date();
+        var currentYear = myDate.getFullYear();
+
+        {% for date in dates %}
+            $(function () {
+                if (currentYear =={{ date.year }}) {
+                    $(function () {
+                        $('#collapse{{ date.year }}').collapse('show')
+                    })
+                } else {
+                    $(function () {
+                        $('#collapse{{ date.year }}').collapse('hide')
+                    })
+                }
+            })
+        {% endfor %}
+    </script>
 {% endblock %}
