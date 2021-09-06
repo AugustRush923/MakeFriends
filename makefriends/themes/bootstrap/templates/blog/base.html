@@ -173,65 +173,62 @@
 <script src="{% static "js/backtop.js" %}"></script>
 <script src="{% static "js/echarts.min.js" %}"></script>
 <script src="{% static "js/echarts-wordcloud.js" %}"></script>
+<script>
+    var chart = echarts.init(document.getElementById('wordcloud'));
+    var option = {
+        tooltip: {},
+        series: [{
+            type: 'wordCloud',
+            gridSize: 2,
+            sizeRange: [12, 50],
+            rotationRange: [0, 90],
+            shape: 'circle',
+            left: 'center',
+            top: 'center',
+            right: null,
+            bottom: null,
+            width: '90%',
+            height: '110%',
+            drawOutOfBound: true,
+            textStyle: {
 
-{% cache 3600 wordcloud %}
-    <script>
-        var chart = echarts.init(document.getElementById('wordcloud'));
-        var option = {
-            tooltip: {},
-            series: [{
-                type: 'wordCloud',
-                gridSize: 2,
-                sizeRange: [12, 50],
-                rotationRange: [0, 90],
-                shape: 'circle',
-                left: 'center',
-                top: 'center',
-                right: null,
-                bottom: null,
-                width: '90%',
-                height: '110%',
-                drawOutOfBound: true,
+                //颜色可以作为回调函数或颜色字符串
+                color: function () {
+                    //随机
+                    return 'rgb(' + [
+                        Math.round(Math.random() * 160),
+                        Math.round(Math.random() * 160),
+                        Math.round(Math.random() * 160)
+                    ].join(',') + ')';
+                }
+
+            },
+            emphasis: {
                 textStyle: {
+                    shadowBlur: 10,
+                    shadowColor: '#333'
+                }
+            },
+            data: [
+                {% for tag in tag_list %}
+                    {"name": "{{tag.name}}", "value": {{ tag.num_posts}}},
+                {% endfor %}
+            ]
+        }]
+    };
 
-                    //颜色可以作为回调函数或颜色字符串
-                    color: function () {
-                        //随机
-                        return 'rgb(' + [
-                            Math.round(Math.random() * 160),
-                            Math.round(Math.random() * 160),
-                            Math.round(Math.random() * 160)
-                        ].join(',') + ')';
-                    }
+    chart.setOption(option);
 
-                },
-                emphasis: {
-                    textStyle: {
-                        shadowBlur: 10,
-                        shadowColor: '#333'
-                    }
-                },
-                data: [
-                    {% for tag in tag_list %}
-                        {"name": "{{tag.name}}", "value": {{ tag.num_posts}}},
-                    {% endfor %}
-                ]
-            }]
-        };
+    var ecConfig = echarts.config;
+    chart.on('click', eConsole);
 
-        chart.setOption(option);
-
-        var ecConfig = echarts.config;
-        chart.on('click', eConsole);
-
-        function eConsole(param) {
-            console.log(param.data.name)
-            if (typeof param.seriesIndex != 'undefined') {
-                window.location.href = "https://hdcheung.cn/tag/" + param.data.name + "/";
-            }
+    function eConsole(param) {
+        console.log(param.data.name)
+        if (typeof param.seriesIndex != 'undefined') {
+            window.location.href = "https://hdcheung.cn/tag/" + param.data.name + "/";
         }
-    </script>
-{% endcache %}
+    }
+</script>
 {% block jsBlock %}
 
 {% endblock %}
