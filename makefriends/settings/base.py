@@ -47,7 +47,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'blog.middleware.performance.GetPathMiddleware',
     'blog.middleware.performance.PerformanceMiddleware',
     'blog.middleware.user_id.UserIDMiddleware',
     'django.middleware.security.SecurityMiddleware',
