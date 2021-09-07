@@ -174,11 +174,13 @@ class PostDetailView(CommonViewMixin, DetailView):
         context = super(PostDetailView, self).get_context_data()
         post_id = self.kwargs.get('post_id')
         post = get_object_or_404(Post, pk=post_id)
+        current_category = post.category
         context.update({
             # 'pre_post': Post.objects.filter(status=1).filter(created_time__gt=post.created_time).last(),
             'pre_post': Post.objects.filter(Q(status=1) & Q(created_time__lt=post.created_time)).first(),
             # 'next_post': Post.objects.filter(status=1).filter(created_time__lt=post.created_time).first(),
             'next_post': Post.objects.filter(Q(status=1) & Q(created_time__gt=post.created_time)).last(),
+            'current_category': current_category
         })
         return context
 
