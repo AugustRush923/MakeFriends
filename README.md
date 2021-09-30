@@ -27,6 +27,8 @@ Nginx反向代理 + uWSGI + Supervisor + MySQL + Redis + Django 1.11.1 + Python 
 <br>
 
 ## Updates:
+* 2021-9-30: 热度排行榜使用Redis zset实现。
+
 * 2021-9-7: 文章详情页面包屑导航的添加
 
 * 2021-9-6: 归档页面折叠栏
