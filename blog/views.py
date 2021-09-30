@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
+from django_redis import get_redis_connection
 
 from .models import Post, Tag, Category
 from celery_tasks.count.tasks import increase_PV, increase_UV, increase_both
@@ -18,7 +19,8 @@ class CommonViewMixin:
         context.update({
             'tag_list': Tag.get_tags(),  # 获取tag标签
             'category': Category.get_navs(),  # 获取分类
-            'hot_post': Post.hot_posts(),  # 获取热门文章
+            # 'hot_post': Post.hot_posts(),  # 获取热门文章
+            'hot_ranks': Post.get_top_n_articles(11)
         })
         return context
 

@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+from django_redis import get_redis_connection
 from django.core.cache import cache
 
 from .models import Post, Category, Tag
-from blog.actions import make_status_normal, make_status_delete
+from blog.actions import make_status_normal, make_status_delete, save_all
 from blog.filters import CategoryOwnerFilter
 
 # Register your models here.
@@ -71,7 +72,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = [CategoryOwnerFilter, 'status', 'tag']  # 配置页面过滤器，需要通过哪些字段来过滤列表页
     search_fields = ['title', 'category__name']  # 配置搜索字段。
 
-    actions = (make_status_normal, make_status_delete)
+    actions = (make_status_normal, make_status_delete, save_all)
     actions_on_top = True
     actions_on_bottom = True
 

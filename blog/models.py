@@ -3,6 +3,7 @@ from django.db import models
 from django.core.cache import cache
 from django.db.models import Count, Case, When, Q
 from django.contrib.auth.models import User
+from django_redis import get_redis_connection
 from django.utils.functional import cached_property
 import mistune
 
@@ -138,6 +139,9 @@ class Post(models.Model):
             'markdown.extensions.fenced_code',
         ])
         self.content_markdown = md.convert(self.content)
+        if self.status:
+            redis = get_redis_connection('hot_ranks')
+            redis.zadd('hot_rank', {f"{self.title}:{self.id}": self.pv})  # db.zadd(REDIS_KEY, {member:score})
         super(Post, self).save(*args, **kwargs)
 
     @classmethod
@@ -164,3 +168,10 @@ class Post(models.Model):
             dates_year = cls.objects.filter(status=1).dates('created_time', 'year', order='DESC')
             cache.set('dates_year', dates_year, timeout=60 * 60 * 24)
         return dates_year
+
+    @staticmethod
+    def get_top_n_articles(num):
+        hot_ranks_list = []
+        redis = get_redis_connection('hot_ranks')
+        articles_clicks = redis.zrevrange('hot_rank', 0, num, True)
+        return articles_clicks

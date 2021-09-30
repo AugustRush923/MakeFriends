@@ -27,9 +27,11 @@ Nginx反向代理 + uWSGI + Supervisor + MySQL + Redis + Django 1.11.1 + Python 
 <br>
 
 ## Updates:
-* 2020-7-16: 评论系统由Disqus迁移到gitalk。
+* 2021-9-30: 热度排行榜使用Redis Zset实现。
 
-* 2021-7-15：基于echarts词云图重构便签云。增加链接到对应tag页面
+* 2021-7-16: 评论系统由Disqus迁移到gitalk。
+
+* 2021-7-15: 基于echarts词云图重构便签云。增加链接到对应tag页面
 
 * 2021-6-4: 模型展示（最近沉迷模型无法自拔）
 

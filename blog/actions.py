@@ -12,3 +12,11 @@ def make_status_delete(modeladmin, requests, queryset):
 
 
 make_status_delete.short_description = "更新状态为删除"
+
+
+def save_all(modeladmin, requests, queryset):
+    print(queryset)
+    for post in queryset:
+        if post.status:
+            post.save()
+    modeladmin.message_user(requests, "保存成功！")
