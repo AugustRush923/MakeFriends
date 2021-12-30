@@ -6,20 +6,17 @@
 {% endblock %}
 {% block extra_head %}
     <style type="text/css">
-        table thead tr th {
-            border-width: 1px;
-            padding: 8px;
-            border-style: solid;
-            border-color: #666666;
-            background-color: #ffffff;
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            text-align: center;
         }
 
-        table tbody tr td {
-            border-width: 1px;
+        table th, table td {
+            border: 1px solid #FFA500;
             padding: 8px;
-            border-style: solid;
-            border-color: #666666;
             background-color: #ffffff;
+            text-align: center;
         }
     </style>
     <link rel="stylesheet" href="{% static "css/vs.css" %}">
@@ -38,7 +35,9 @@
                             <li><a href="/">首页</a></li>
 
                             {% if current_category %}
-                                <li class="active"><a href="{% url 'category-list' current_category %}">{{ current_category }}</a></li>
+                                <li class="active"><a
+                                        href="{% url 'category-list' current_category %}">{{ current_category }}</a>
+                                </li>
                             {% endif %}
                             <li class="active">正文</li>
                         </ul>
@@ -52,7 +51,7 @@
                             {% autoescape off %}
                                 {% load emoji_tags %}
                                 {{ post.toc | safe }}
-                                <!--                                {{ post.content_markdown | safe }}-->
+                                {# {{ post.content_markdown | safe }} #}
                                 {{ post.content_markdown | emoji_replace }}
                                 {#                                {{ post.content_markdown | emoji_replace_unicode }}#}
                                 {#                                {{ post.content_markdown  | emoji_replace_html_entities }}#}
