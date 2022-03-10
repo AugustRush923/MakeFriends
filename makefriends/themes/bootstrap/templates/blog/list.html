@@ -49,9 +49,15 @@
                             <ul class="pagination">
                                 {% if page_obj.has_previous %}
                                     <li>
+                                    {% if keyword %}
+                                        <a href="?page={{ page_obj.previous_page_number }}&keyword={{ keyword }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;上一页</span>
+                                        </a>
+                                    {% else %}
                                         <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
                                             <span aria-hidden="true">&laquo;上一页</span>
                                         </a>
+                                    {% endif %}
                                     </li>
                                 {% else %}
                                     <li class="disabled">
@@ -61,36 +67,69 @@
                                     </li>
                                 {% endif %}
                                 {% if first %}
-                                    <li><a href="?page=1">1</a></li>
+                                    {% if keyword %}
+                                        <li><a href="?page=1&keyword={{ keyword }}">1</a></li>
+                                    {% else %}
+                                        <li><a href="?page=1">1</a></li>
+                                    {% endif %}
                                 {% endif %}
                                 {% if left %}
                                     {% if left_has_more %}
-                                        <li title="向前4页"><a href="?page={{ pre_page }}">...</a></li>
+                                        {% if keyword %}
+                                            <li title="向前4页"><a href="?page={{ pre_page }}&keyword={{ keyword }}">...</a></li>
+                                        {% else %}
+                                            <li title="向前4页"><a href="?page={{ pre_page }}">...</a></li>
+                                        {% endif %}
                                     {% endif %}
                                     {% for i in left %}
-                                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                        {% if keyword %}
+                                            <li><a href="?page={{ i }}&keyword={{ keyword }}">{{ i }}</a></li>
+                                        {% else %}
+                                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                        {% endif %}
                                     {% endfor %}
                                 {% endif %}
-                                <li><a href="?page={{ page_obj.number }}" style="color: red">{{ page_obj.number }}</a>
-                                </li>
+                                    {% if keyword %}
+                                        <li><a href="?page={{ page_obj.number }}&keyword={{ keyword }}" style="color: red">{{ page_obj.number }}</a></li>
+                                    {% else %}
+                                        <li><a href="?page={{ page_obj.number }}" style="color: red">{{ page_obj.number }}</a></li>
+                                    {% endif %}
                                 {% if right %}
                                     {% for i in right %}
-                                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                        {% if keyword %}
+                                            <li><a href="?page={{ i }}&keyword={{ keyword }}">{{ i }}</a></li>
+                                        {% else %}
+                                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                        {% endif %}
                                     {% endfor %}
                                     {% if right_has_more %}
-                                        <li title="向后4页"><a href="?page={{ next_page }}">...</a></li>
+                                        {% if keyword %}
+                                            <li title="向后4页"><a href="?page={{ next_page }}&keyword={{ keyword }}">...</a></li>
+                                        {% else %}
+                                            <li title="向后4页"><a href="?page={{ next_page }}">...</a></li>
+                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
                                 {% if last %}
-                                    <li><a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+                                    {% if keyword %}
+                                        <li><a href="?page={{ paginator.num_pages }}&keyword={{ keyword }}">{{ paginator.num_pages }}</a></li>
+                                    {% else %}
+                                        <li><a href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a></li>
+                                    {% endif %}
                                 {% endif %}
                                 {% if page_obj.has_next %}
-
                                     <li>
+                                    {% if keyword %}
+                                        <a href="?page={{ page_obj.next_page_number }}&keyword={{ keyword }}" aria-label="Next"><span
+                                                aria-hidden="true">下一页&raquo;</span>
+                                        </a>
+                                    {% else %}
                                         <a href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span
                                                 aria-hidden="true">下一页&raquo;</span>
                                         </a>
+                                    {% endif %}
                                     </li>
+
                                 {% else %}
                                     <li class="disabled">
                                         <a href="#" aria-label="Previous">

@@ -171,7 +171,6 @@ class Post(models.Model):
 
     @staticmethod
     def get_top_n_articles(num):
-        hot_ranks_list = []
         redis = get_redis_connection('hot_ranks')
         articles_clicks = redis.zrevrange('hot_rank', 0, num, True)
         return articles_clicks
