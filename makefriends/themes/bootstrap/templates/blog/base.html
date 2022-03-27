@@ -99,22 +99,22 @@
                 <strong>热门排行</strong> <i class="fa fa-fire"></i>
             </li>
 
-{#            {% for hot in hot_post %}#}
-{#                <li class="list-group-item">#}
-{#                    <a href="{% url 'post-detail' hot.id %}" role="button">{{ hot.title }}#}
-{#                    </a> - {{ hot.pv }} 阅读量#}
-{#                </li>#}
-{#            {% empty %}#}
-{#                暂无文章！#}
-{#            {% endfor %}#}
-            {% for name, score in hot_ranks %}
+            {% for hot in hot_post %}
                 <li class="list-group-item">
-                    <a href="/post/{{ name | split:1 }}.html" role="button">{{ name | split:0 }}
-                    </a> - {{ score | convert2int }} 阅读量
+                    <a href="{% url 'post-detail' hot.id %}" role="button">{{ hot.title }}
+                    </a> - {{ hot.pv }} 阅读量
                 </li>
             {% empty %}
                 暂无文章！
             {% endfor %}
+{#            {% for name, score in hot_ranks %}#}
+{#                <li class="list-group-item">#}
+{#                    <a href="/post/{{ name | split:1 }}.html" role="button">{{ name | split:0 }}#}
+{#                    </a> - {{ score | convert2int }} 阅读量#}
+{#                </li>#}
+{#            {% empty %}#}
+{#                暂无文章！#}
+{#            {% endfor %}#}
 
         </ul>
         <br/>
