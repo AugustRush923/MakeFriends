@@ -164,7 +164,7 @@
         <div class="row">
             <div class="col-md-12 text-center set-foot">
                 <p>基于Nginx+Supervisord+uWSGI+Django1.11.1+Python3.6.5构建</p>
-                <p>版权所有 &copy 2020-2021 August Rush</p>
+                <p id="change"></p>
                 <p><img src="{% static "img/beian_icon.png" %}"/>
                     <a href="http://www.beian.miit.gov.cn">京ICP备20007446号-1</a> &
                     <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=41100202000460">豫公网安备
@@ -237,6 +237,10 @@
             window.location.href = "https://hdcheung.cn/tag/" + param.data.name + "/";
         }
     }
+    var myDate = new Date();
+    var currentYear = myDate.getFullYear();
+    var x = document.getElementById('change')
+    x.innerText = "版权所有 &copy 2020-"+ currentYear +" AugustRush"
 </script>
 {% block jsBlock %}
 
