@@ -70,7 +70,7 @@ class Tag(models.Model):
         (STATUS_DELETE, '删除'),
     )
 
-    name = models.CharField(max_length=10, verbose_name='名称')
+    name = models.CharField(max_length=20, verbose_name='名称')
     status = models.PositiveIntegerField(
         default=STATUS_NORMAL,
         choices=STATUS_ITEMS,
