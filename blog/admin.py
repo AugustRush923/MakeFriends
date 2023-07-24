@@ -72,7 +72,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = [CategoryOwnerFilter, 'status', 'tag']  # 配置页面过滤器，需要通过哪些字段来过滤列表页
     search_fields = ['title', 'category__name']  # 配置搜索字段。
 
-    actions = (make_status_normal, make_status_delete, save_all)
+    actions = (make_status_normal, make_status_delete, 'save_all_model')
     actions_on_top = True
     actions_on_bottom = True
 
@@ -111,8 +111,22 @@ class PostAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
+        redis_conn = get_redis_connection('hot_ranks')
+        redis_conn.zadd('hot_rank', {f"{obj.title}:{obj.id}": obj.pv})
         return super(PostAdmin, self).save_model(request, obj, form, change)
 
     def get_queryset(self, request):
         qs = super(PostAdmin, self).get_queryset(request)
         return qs.filter(owner=request.user)
+
+    def save_all_model(self, requests, queryset):
+        try:
+            for post_model in queryset:
+                if post_model.status:
+                    redis_conn = get_redis_connection('hot_ranks')
+                    redis_conn.zadd('hot_rank', {f'{post_model.title}:{post_model.id}': post_model.pv})
+            self.message_user(requests, "修改成功！")
+        except Exception:
+            self.message_user(requests, "保存失败！")
+
+    save_all_model.short_description = "保存指定实例"

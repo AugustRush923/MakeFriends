@@ -19,8 +19,8 @@ class CommonViewMixin:
         context.update({
             'tag_list': Tag.get_tags(),  # 获取tag标签
             'category': Category.get_navs(),  # 获取分类
-            'hot_post': Post.hot_posts(),  # 获取热门文章
-            # 'hot_ranks': Post.get_top_n_articles(11)
+            # 'hot_post': Post.hot_posts(),  # 获取热门文章
+            'hot_post': Post.get_top_n_articles(11)
         })
         return context
 
